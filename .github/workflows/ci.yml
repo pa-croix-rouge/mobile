@@ -62,7 +62,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Run MobSF Analysis
-        uses: fundacaocerti/mobsf-action@v1.7.2
+        uses: fundacaocerti/mobsf-action@v1.7.1
         env:
           INPUT_FILE_NAME: build/app/outputs/flutter-apk/app-production-release.apk
           SCAN_TYPE: apk
