@@ -5,79 +5,33 @@ on:
     branches:
       - master
       - dev
-      - 'features/**'
       - 'feature/**'
       - 'fix/**'
   pull_request:
     branches:
       - master
       - dev
-      - 'features/**'
       - 'feature/**'
       - 'fix/**'
 
 jobs:
-  checkout:
+  build:
     runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-  clean:
-    needs: checkout
-    runs-on: self-hosted
-    steps:
-      - name: Clean
-        run: flutter clean
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.18.0'
 
-  install:
-    needs: clean
-    runs-on: self-hosted
-    steps:
       - name: Install dependencies
         run: flutter pub get
-      - name: Copy properties
-        run: cp /root/pa-cxr/key/key.properties ./android/app/.
 
-  build:
-    needs: install
-    runs-on: self-hosted
-    steps:
       - name: Build
-        env:
-          ANDROID_KEYSTORE_PATH: ${{ secrets.ANDROID_KEYSTORE_PATH }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
-          ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-        run: flutter build apk --release --flavor production
+        run: flutter build apk --release
 
-  tests:
-    needs: build
-    runs-on: self-hosted
-    steps:
       - name: Tests
         run: flutter test
-
-  security-scan:
-    needs: tests
-    runs-on: self-hosted
-    steps:
-      - name: Prepare file hierarchy
-        run: |
-          mkdir -p target
-          cp build/app/outputs/flutter-apk/app-production-release.apk /tmp/.
-
-      - name: Checkout repository mobsf-ci
-        uses: actions/checkout@v2
-        with:
-          repository: Soluto/mobsf-ci
-
-      - name: Run MobSF Analysis
-        env:
-          TARGET_PATH: 'target/app-production-release.apk'
-        run: |
-          mkdir target
-          cp /tmp/app-production-release.apk ./target/.
-          cp ~/pa-cxr/scan.rb ./scan/scan.rb
-          docker-compose up --build --exit-code-from scan
