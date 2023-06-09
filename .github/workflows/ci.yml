@@ -73,7 +73,7 @@ jobs:
           sudo chown -R 9901:9901 /home/runner/work/$REPO_NAME/$REPO_NAME
 
       - name: Run MobSF Analysis
-        uses: fundacaocerti/mobsf-action@v1.7.2
+        uses: fundacaocerti/mobsf-action@v1.7.1
         env:
           INPUT_FILE_NAME: build/app/outputs/apk/app.apk
           SCAN_TYPE: apk
