@@ -22,22 +22,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-  install:
-    needs: checkout
-    runs-on: self-hosted
-    steps:
-      - name: Install dependencies
-        run: flutter pub get
-
   clean:
-    needs: install
+    needs: checkout
     runs-on: self-hosted
     steps:
       - name: Clean
         run: flutter clean
 
-  build:
+  install:
     needs: clean
+    runs-on: self-hosted
+    steps:
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Copy properties
+        run: cp /root/pa-crx/key/key.properties ./android/app/.
+
+  build:
+    needs: install
     runs-on: self-hosted
     steps:
       - name: Build
