@@ -77,5 +77,5 @@ jobs:
         run: |
           mkdir target
           cp /tmp/app-production-release.apk ./target/.
-          sed -i '8isleep 5' scan/scan.rb
+          sed -i '8isleep 20' scan/scan.rb
           docker-compose up --build --exit-code-from scan
