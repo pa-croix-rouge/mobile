@@ -70,12 +70,14 @@ jobs:
           sudo chown -R 9901:9901 /home/runner/work/_temp/_github_home
           
           sudo mkdir -p /home/runner/work/$REPO_NAME/$REPO_NAME
+          sudo cp build/app/outputs/flutter-apk/app-production-release.apk /home/runner/work/$REPO_NAME/$REPO_NAME/.
           sudo chown -R 9901:9901 /home/runner/work/$REPO_NAME/$REPO_NAME
 
       - name: Run MobSF Analysis
         uses: fundacaocerti/mobsf-action@v1.7.1
         env:
-          INPUT_FILE_NAME: build/app/outputs/flutter-apk/app-production-release.apk
+          REPO_NAME: ${{ github.event.repository.name }}
+          INPUT_FILE_NAME: /home/runner/work/$REPO_NAME/$REPO_NAME/app-production-release.apk
           SCAN_TYPE: apk
           OUTPUT_FILE_NAME: mobsf-report
 
