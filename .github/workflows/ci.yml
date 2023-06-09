@@ -15,23 +15,30 @@ on:
       - 'fix/**'
 
 jobs:
-  build:
+  checkout:
     runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.18.0'
-
+  install:
+    needs: checkout
+    runs-on: self-hosted
+    steps:
       - name: Install dependencies
         run: flutter pub get
 
+  build:
+    needs: install
+    runs-on: self-hosted
+    steps:
       - name: Build
         run: flutter build apk --release
 
+  tests:
+    needs: build
+    runs-on: self-hosted
+    steps:
       - name: Tests
         run: flutter test
