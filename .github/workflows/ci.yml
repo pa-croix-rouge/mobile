@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Copy properties
-        run: cp /root/pa-crx/key/key.properties ./android/app/.
+        run: cp /root/pa-cxr/key/key.properties ./android/app/.
 
   build:
     needs: install
