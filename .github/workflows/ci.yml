@@ -61,41 +61,18 @@ jobs:
     needs: tests
     runs-on: self-hosted
     steps:
-      - name: Fix Permissions for MobSF Docker
-        env:
-          REPO_NAME: ${{ github.event.repository.name }}
+      - name: Checkout du repository mobsf-ci
+        uses: actions/checkout@v2
+        with:
+          repository: Soluto/mobsf-ci
+
+      - name: Prepare file hierarchy
         run: |
-          set -e
-          sudo mkdir -p /home/runner/work/_temp/_github_home
-          sudo chown -R 9901:9901 /home/runner/work/_temp/_github_home
-          
-          sudo mkdir -p /home/runner/work/$REPO_NAME/$REPO_NAME
-          sudo cp build/app/outputs/flutter-apk/app-production-release.apk /home/runner/work/$REPO_NAME/$REPO_NAME/.
-          sudo chown -R 9901:9901 /home/runner/work/$REPO_NAME/$REPO_NAME
+          mkdir -p target
+          cp build/app/outputs/flutter-apk/app-production-release.apk target/
 
       - name: Run MobSF Analysis
-        uses: fundacaocerti/mobsf-action@v1.7.1
         env:
-          INPUT_FILE_NAME: /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/app-production-release.apk
-          SCAN_TYPE: apk
-          OUTPUT_FILE_NAME: mobsf-report
-
-      - name: Cleanup MobSF Permissions
-        env:
-          REPO_NAME: ${{ github.event.repository.name }}
-        run: |
-          set -e
-          sudo chown -R runner:docker /home/runner/work/_temp/_github_home
-          sudo chown -R runner:docker /home/runner/work/$REPO_NAME/$REPO_NAME
-
-      - name: Upload MobSF Analysis PDF Result
-        uses: actions/upload-artifact@v2
-        with:
-          name: mobsf-report.pdf
-          path: mobsf-report.pdf
-
-      - name: Upload MobSF Analysis JSON Result
-        uses: actions/upload-artifact@v2
-        with:
-          name: mobsf-report.json
-          path: mobsf-report.json
+          TARGET_PATH: 'target/app-production-release.apk'
+        run:
+          docker-compose up --build --exit-code-from scan
