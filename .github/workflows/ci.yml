@@ -75,5 +75,6 @@ jobs:
         env:
           TARGET_PATH: 'target/app-production-release.apk'
         run: |
+          mkdir target
           cp /tmp/app-production-release.apk ./target/.
           docker-compose up --build --exit-code-from scan
