@@ -61,15 +61,15 @@ jobs:
     needs: tests
     runs-on: self-hosted
     steps:
-      - name: Checkout du repository mobsf-ci
-        uses: actions/checkout@v2
-        with:
-          repository: Soluto/mobsf-ci
-
       - name: Prepare file hierarchy
         run: |
           mkdir -p target
           cp build/app/outputs/flutter-apk/app-production-release.apk target/
+
+      - name: Checkout du repository mobsf-ci
+        uses: actions/checkout@v2
+        with:
+          repository: Soluto/mobsf-ci
 
       - name: Run MobSF Analysis
         env:
