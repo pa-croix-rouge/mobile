@@ -6,12 +6,14 @@ on:
       - master
       - dev
       - 'features/**'
+      - 'feature/**'
       - 'fix/**'
   pull_request:
     branches:
       - master
       - dev
       - 'features/**'
+      - 'feature/**'
       - 'fix/**'
 
 jobs:
