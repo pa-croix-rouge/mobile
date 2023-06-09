@@ -77,7 +77,7 @@ jobs:
         uses: fundacaocerti/mobsf-action@v1.7.1
         env:
           REPO_NAME: ${{ github.event.repository.name }}
-          INPUT_FILE_NAME: /home/runner/work/$REPO_NAME/$REPO_NAME/app-production-release.apk
+          INPUT_FILE_NAME: /home/runner/work/${{REPO_NAME}}/${{REPO_NAME}}/app-production-release.apk
           SCAN_TYPE: apk
           OUTPUT_FILE_NAME: mobsf-report
 
