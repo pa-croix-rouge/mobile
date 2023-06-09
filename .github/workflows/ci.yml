@@ -29,8 +29,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-  build:
+  clean:
     needs: install
+    runs-on: self-hosted
+    steps:
+      - name: Clean
+        run: flutter clean
+
+  build:
+    needs: clean
     runs-on: self-hosted
     steps:
       - name: Build
