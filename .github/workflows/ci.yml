@@ -56,3 +56,16 @@ jobs:
     steps:
       - name: Tests
         run: flutter test
+
+  security-scan:
+    needs: tests
+    runs-on: self-hosted
+    steps:
+      - name: Generate MobSF report
+        run: |
+          docker pull opensecurity/mobile-security-framework-mobsf:latest
+          docker run -it --rm -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest
+          sleep 10
+          docker exec mobsf python3 manage.py APKStaticScan ./build/app/outputs/flutter-apk/app-production-release.apk
+          docker exec mobsf python3 manage.py APKiD ./build/app/outputs/flutter-apk/app-production-release.apk
+          docker exec mobsf python3 manage.py APKBinder ./build/app/outputs/flutter-apk/app-production-release.apk
