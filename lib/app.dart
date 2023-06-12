@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
-import 'package:pa_mobile/flows/authentication/ui/logout_screen.dart';
+import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
-
-import 'flows/home/ui/home_screen.dart';
 
 class MyApp extends StatefulWidget {
   final bool isLogged;
@@ -31,7 +29,6 @@ class _MyAppState extends State<MyApp> {
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
-        LogoutScreen.routeName: (context) => LogoutScreen(),
       },
     );
   }
