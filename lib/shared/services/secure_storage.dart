@@ -7,18 +7,22 @@ class SecureStorage {
 
   static final SecureStorage _instance = SecureStorage._internal();
 
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  final String JWT_TOKEN_KEY = 'jwt_token';
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  Future<void> writeJwtToken(String value) async {
-    await _storage.write(key: JWT_TOKEN_KEY, value: value);
+  static AndroidOptions _getAndroidOptions() => const AndroidOptions(
+        encryptedSharedPreferences: true,
+      );
+
+  static Future<String?> get(String key) async {
+    return _storage.read(key: key, aOptions: _getAndroidOptions());
   }
 
-  Future<String?> readJwtToken() async {
-    return _storage.read(key: JWT_TOKEN_KEY);
+  static Future<void> set(String key, String value) async {
+    await _storage.write(
+        key: key, value: value, aOptions: _getAndroidOptions());
   }
 
-  Future<void> deleteJwtToken() async {
-    await _storage.delete(key: JWT_TOKEN_KEY);
+  static Future<void> delete(String key) async {
+    await _storage.delete(key: key, aOptions: _getAndroidOptions());
   }
 }

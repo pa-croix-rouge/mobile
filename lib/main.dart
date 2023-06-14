@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pa_mobile/app.dart';
 import 'package:pa_mobile/bootstrap.dart';
-import 'package:pa_mobile/shared/services/secure_storage.dart';
+import 'package:pa_mobile/shared/services/jwt_secure_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,6 +10,7 @@ void main() async {
 }
 
 Future<bool> autoLogin() async {
-  final jwtToken = await SecureStorage().readJwtToken();
+  //todo verifier aussi si dans le cubit le user veut rester connecter
+  final jwtToken = await JwtSecureStorage().readJwtToken();
   return jwtToken != null;
 }

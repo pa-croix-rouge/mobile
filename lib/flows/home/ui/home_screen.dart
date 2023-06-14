@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pa_mobile/shared/services/secure_storage.dart';
+import 'package:pa_mobile/shared/services/jwt_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            print(await SecureStorage().readJwtToken());
+            print(await JwtSecureStorage().readJwtToken());
           },
           child: const Text('see token'),
         ),
