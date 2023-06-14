@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
-import 'package:pa_mobile/shared/sevices/secure_storage.dart';
+import 'package:pa_mobile/shared/services/secure_storage.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
+import 'package:pa_mobile/shared/widget/cr_checkbox.dart';
 
 class LoginScreen extends StatefulWidget {
+  LoginScreen({super.key});
+
   static const routeName = '/login';
 
   final TextEditingController usernameController = TextEditingController();
@@ -68,6 +71,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: FieldValidators.passwordValidator,
                     focusNode: _focusNodes[1],
                   ),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: keepMeSignedCheckBox,
+                    builder: (context, value, _) {
+                      return CrCheckBox(
+                        text: "Rester connecté",
+                        isChecked: value,
+                        onChanged: onCheckBoxChange,
+                      );
+                    },
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -101,6 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void onCheckBoxChange(bool? value) {
+    if (value != null) {
+      keepMeSignedCheckBox.value = value;
+      keepMeSignedCheckBox.notifyListeners();
+    }
+  }
 
   Future<void> onLoginPressed() async {
     if (_loginKey.currentState!.validate()) {

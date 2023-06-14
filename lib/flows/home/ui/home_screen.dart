@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pa_mobile/shared/sevices/secure_storage.dart';
+import 'package:pa_mobile/shared/services/secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -13,15 +13,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WELCOME'),
+        title: const Text('Account'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF13B9FF),
+                Color(0xFF2CA2FC),
+              ],
+            ),
+          ),
+        )
       ),
       body: Center(
-        // button to logout
         child: ElevatedButton(
           onPressed: () async {
             print(await SecureStorage().readJwtToken());
           },
-          child: Text('see token'),
+          child: const Text('see token'),
         ),
       ),
     );
