@@ -1,7 +1,7 @@
 import 'package:form_field_validator/form_field_validator.dart';
 
 class FieldValidators {
-  static TextFieldValidator get pseudoValidator => RequiredValidator(errorText: 'Name is required');
+  static TextFieldValidator get usernameValidator => RequiredValidator(errorText: 'Username is required');
 
   static FieldValidator<dynamic> get emailValidator => MultiValidator([
     RequiredValidator(errorText: 'Email is required'),

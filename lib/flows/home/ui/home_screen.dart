@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pa_mobile/shared/sevices/secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -15,7 +16,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('WELCOME'),
       ),
       body: Center(
-        child: Text('HOME'),
+        // button to logout
+        child: ElevatedButton(
+          onPressed: () async {
+            print(await SecureStorage().readJwtToken());
+          },
+          child: Text('see token'),
+        ),
       ),
     );
   }

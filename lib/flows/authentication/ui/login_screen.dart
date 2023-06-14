@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
+import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
+import 'package:pa_mobile/shared/sevices/secure_storage.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   final List<FocusNode> _focusNodes = [
     FocusNode(),
     FocusNode(),
@@ -29,7 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text(
           'Se connecter',
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: Theme
+              .of(context)
+              .textTheme
+              .headlineSmall,
         ),
       ),
       body: SafeArea(
@@ -37,20 +40,20 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             const Spacer(),
             Form(
+              key: _loginKey,
               child: Column(
-                key: _loginKey,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextFormField(
                     decoration: const InputDecoration(
-                      hintText: 'Email',
-                      icon: Icon(Icons.email),
+                      hintText: 'Username',
+                      icon: Icon(Icons.account_circle),
                       fillColor: Colors.white,
                     ),
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.name,
                     textInputAction: TextInputAction.next,
-                    controller: widget.emailController,
-                    validator: FieldValidators.emailValidator,
+                    controller: widget.usernameController,
+                    validator: FieldValidators.usernameValidator,
                     focusNode: _focusNodes[0],
                   ),
                   TextFormField(
@@ -79,6 +82,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {},
                         child: const Text("S'inscrire"),
                       ),
+                      const Padding(
+                        padding: EdgeInsets.all(10),
+                      ),
+                      TextButton(
+                        onPressed: () async {print(await SecureStorage().readJwtToken());},
+                        child: const Text("S'inscrire"),
+                      ),
                     ],
                   ),
                 ],
@@ -91,16 +101,41 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void onLoginPressed() {
-    _loginKey.currentState!.validate();
-    login(emailController.text, passwordController.text);
+
+  Future<void> onLoginPressed() async {
+    if (_loginKey.currentState!.validate()) {
+      try {
+        if (await Authentication.login(LoginRequestDto(
+            username: widget.usernameController.text,
+            password: widget.passwordController.text,
+          ),)) {
+          Navigator.pushNamed(context, '/home');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Wrong username and password combination'),
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .error,
+            ),
+          );
+        }
+
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('server inaccessible'),
+            backgroundColor: Theme
+                .of(context)
+                .colorScheme
+                .error,
+          ),
+        );
+      }
+    }
   }
 
   void onRegisterPressed() {
     Navigator.pushNamed(context, '/register');
-  }
-
-  void login(String email, String password) {
-
   }
 }
