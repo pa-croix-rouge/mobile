@@ -51,8 +51,8 @@ android {
 
     defaultConfig {
         applicationId "croix.rouge.mobile.com"
-        minSdkVersion 18
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
