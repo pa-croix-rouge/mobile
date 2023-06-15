@@ -14,6 +14,24 @@ class EncodeTools {
     }
   }
 
+  static int decodeInt(String body, String key) {
+    try {
+      final jsonObject = jsonDecode(body);
+      return _validateField<int>(jsonObject, key);
+    } catch (e) {
+      throw Exception('error decoding int');
+    }
+  }
+
+  static bool decodeBool(String body, String s) {
+    try {
+      final jsonObject = jsonDecode(body);
+      return _validateField<bool>(jsonObject, s);
+    } catch (e) {
+      throw Exception('error decoding bool');
+    }
+  }
+
   static T _validateField<T>(dynamic dict, String key) {
     final dynamic value = dict[key];
     if (value == null || !checkType<T>(value)) {

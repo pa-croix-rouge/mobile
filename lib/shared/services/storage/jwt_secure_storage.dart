@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:pa_mobile/shared/services/secure_storage.dart';
+import 'package:pa_mobile/shared/services/storage/secure_storage.dart';
 
 class JwtSecureStorage {
   factory JwtSecureStorage() => _instance;

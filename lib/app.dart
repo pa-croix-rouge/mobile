@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
-import 'package:pa_mobile/shared/services/jwt_secure_storage.dart';
+import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.isLogged});
