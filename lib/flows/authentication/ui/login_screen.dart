@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
+import 'package:pa_mobile/flows/event/ui/event_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
@@ -136,8 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
           } else {
             await StayLoginSecureStorage().notStayLogin();
           }
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => false);
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(EventScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -147,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('server inaccessible'),

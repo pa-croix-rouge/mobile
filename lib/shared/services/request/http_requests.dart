@@ -26,6 +26,7 @@ class HttpRequests {
     Object body,
     Map<String, String>? headers,
   ) async {
+    print( Uri.parse(Environment.apiURL + route));
     final url = Uri.parse(Environment.apiURL + route);
     return http.post(url, headers: await _defaultHeaders(headers), body: body);
   }
