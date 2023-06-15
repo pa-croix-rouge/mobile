@@ -10,6 +10,11 @@ Mobile Croix Rouge
 
 ---
 
+## Local Development 🛠
+```bash
+ fvm flutter run --flavor development -d [device-id]
+```
+
 ## Getting Started 🚀
 
 This project contains 3 flavors:

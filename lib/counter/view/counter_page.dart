@@ -8,8 +8,8 @@ class CounterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CounterCubit(),
+    return BlocProvider.value(
+      value: CounterCubit(),
       child: const CounterView(),
     );
   }
@@ -29,7 +29,7 @@ class CounterView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () => context.read<CounterCubit>().increment(),
+            onPressed: () => context.read<CounterCubit>(),
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 8),
