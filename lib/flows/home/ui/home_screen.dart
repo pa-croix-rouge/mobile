@@ -43,18 +43,25 @@ class _HomeScreenState extends State<HomeScreen> {
             if (ConnectionState.active != null && !snapshot.hasData) {
               return const Text("Loading");
             }
+            if (ConnectionState.done != null && snapshot.hasError) {
+              return const Center(
+                child: Text('Something went wrong :('),
+              );
+            }
+            final volunteer = snapshot.data as VolunteerResponseDto;
+            return Column(
+              children: [
+                Text('ID : ${volunteer.id}'),
+                Text('username : ${volunteer.username}'),
+                Text('firstName : ${volunteer.firstName}'),
+                Text('lastName : ${volunteer.lastName}'),
+                Text('phoneNumber : ${volunteer.phoneNumber}'),
+                Text('isValidated : ${volunteer.isValidated}'),
+                Text('localUnitId : ${volunteer.localUnitId}'),
+              ],
+            );
           },
-        ), /*Column(
-          children: [
-            Text('ID : ${volunteerInfo.id}'),
-            Text('username : ${volunteerInfo.username}'),
-            Text('firstName : ${volunteerInfo.firstName}'),
-            Text('lastName : ${volunteerInfo.lastName}'),
-            Text('phoneNumber : ${volunteerInfo.phoneNumber}'),
-            Text('isValidated : ${volunteerInfo.isValidated}'),
-            Text('localUnitId : ${volunteerInfo.localUnitId}'),
-          ],
-        ),*/
+        ),
       ),
     );
   }
