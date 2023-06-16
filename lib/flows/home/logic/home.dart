@@ -7,6 +7,7 @@ class Home {
   static Future<VolunteerResponseDto> getVolunteerInfo() async {
     final response = await HttpRequests.get(volunteerInfoRoute, null);
 
+    print("object");
     switch (response.statusCode) {
       case 200:
         print(response.body);

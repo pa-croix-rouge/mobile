@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
+import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
@@ -94,15 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {},
                         child: const Text("S'inscrire"),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          print(await JwtSecureStorage().readJwtToken());
-                        },
-                        child: const Text("S'inscrire"),
-                      ),
                     ],
                   ),
                 ],
@@ -117,8 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onCheckBoxChange(bool? value) {
     if (value != null) {
-      keepMeSignedCheckBox.value = value;
-      keepMeSignedCheckBox.notifyListeners();
+      keepMeSignedCheckBox..value = value
+      ..notifyListeners();
     }
   }
 
@@ -136,8 +128,8 @@ class _LoginScreenState extends State<LoginScreen> {
           } else {
             await StayLoginSecureStorage().notStayLogin();
           }
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => false);
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(AccountDetailsScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -147,6 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('server inaccessible'),

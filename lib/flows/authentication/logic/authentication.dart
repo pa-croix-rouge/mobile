@@ -5,15 +5,13 @@ import 'package:pa_mobile/shared/services/request/http_requests.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
 class Authentication {
-  static String get route => '/login';
+  static String get route => '/login/beneficiary';
 
   static Future<bool> login(LoginRequestDto loginDto) async {
     final response = await HttpRequests.post(
       route,
       loginDto.encode(),
-      null,
     );
-
     switch (response.statusCode) {
       case 200:
         final loginResponse = LoginResponseDto.decode(response.body);
