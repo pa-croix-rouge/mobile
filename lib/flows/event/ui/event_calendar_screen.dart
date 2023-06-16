@@ -1,18 +1,16 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/event/logic/event.dart';
 import 'package:pa_mobile/flows/event/ui/event_detail_screen.dart';
-import 'package:pa_mobile/flows/home/logic/home.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../core/model/event/EventResponseDTO.dart';
-
 class EventScreen extends StatefulWidget {
+  const EventScreen({super.key});
+
   static const routeName = '/event';
 
   @override
@@ -22,8 +20,11 @@ class EventScreen extends StatefulWidget {
 class _EventScreenState extends State<EventScreen> {
   DateTime _selectedDay = DateTime(2000, 06, 1);
 
+  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks;
   List<EventResponseDTO> localUnitEvents = [];
   late final ValueNotifier<List<EventResponseDTO>> selectedEvent;
+
+  late VolunteerResponseDto volunteer;
 
   List<EventResponseDTO> _getEventsForDay(DateTime day) {
     return localUnitEvents
@@ -41,11 +42,21 @@ class _EventScreenState extends State<EventScreen> {
     }
   }
 
+  Future<List<EventResponseDTO>> load() async {
+    final res = await Future.wait([
+      EventLogic.getConnectVolunteer(),
+      EventLogic.getLocalUnitEvent('1')
+    ]);
+
+    volunteer = res[0] as VolunteerResponseDto;
+    return res[1] as List<EventResponseDTO>;
+  }
+
   @override
   void initState() {
     super.initState();
     _selectedDay = DateTime(2000, 06, 1);
-    selectedEvent = ValueNotifier(_getEventsForDay(_selectedDay!));
+    selectedEvent = ValueNotifier(_getEventsForDay(_selectedDay));
   }
 
   @override
@@ -72,7 +83,7 @@ class _EventScreenState extends State<EventScreen> {
       body: Center(
         //show volunteer info
         child: FutureBuilder(
-          future: EventLogic.getLocalUnitEvent('1'),
+          future: load(),
           builder: (context, AsyncSnapshot<List<EventResponseDTO>> snapshot) {
             if (!snapshot.hasData) {
               return const CircularProgressIndicator();
@@ -89,13 +100,26 @@ class _EventScreenState extends State<EventScreen> {
                   firstDay: DateTime.utc(1999, 1, 1),
                   lastDay: DateTime.utc(2030, 3, 14),
                   focusedDay: _selectedDay,
+                  locale: 'fr_FR',
+                  startingDayOfWeek: StartingDayOfWeek.monday,
                   selectedDayPredicate: (day) {
                     return isSameDay(_selectedDay, day);
                   },
+                  calendarFormat: _calendarFormat,
                   onDaySelected: _onDaySelected,
                   eventLoader: _getEventsForDay,
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  },
+                  onPageChanged: (focusedDay) {
+                    _selectedDay = focusedDay;
+                  },
                 ),
-                const SizedBox(height: 8.0),
+                const SizedBox(height: 8),
                 Expanded(
                   child: ValueListenableBuilder<List<EventResponseDTO>>(
                     valueListenable: selectedEvent,
@@ -115,9 +139,9 @@ class _EventScreenState extends State<EventScreen> {
                             child: ListTile(
                               onTap: () => Navigator.push(
                                   context,
-                                  MaterialPageRoute(
+                                  MaterialPageRoute<EventDetailScreen>(
                                     builder: (context) =>
-                                        EventDetailScreen(event: value[index]),
+                                        EventDetailScreen(event: value[index], volunteer: volunteer),
                                   )),
                               title: Text(value[index].name),
                             ),

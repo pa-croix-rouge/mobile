@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pa_mobile/core/model/event/EventRegistrationDTO.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
-import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
-import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
-import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
-
-import '../logic/event.dart';
+import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
+import 'package:pa_mobile/flows/event/logic/event.dart';
 
 class EventDetailScreen extends StatefulWidget {
-  const EventDetailScreen({super.key, required this.event});
+  const EventDetailScreen(
+      {super.key, required this.event, required this.volunteer});
 
   final EventResponseDTO event;
+  final VolunteerResponseDto volunteer;
 
   static const routeName = '/event';
 
@@ -20,18 +19,56 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
-  final dateFormat = DateFormat.Hms();
+  final dateFormat = DateFormat.Hm();
 
-  Future<void> onJoin(int timeWindowID) async {
+  Future<void> onJoin(int timeWindowIndex) async {
+    print('onJoin');
     try {
-      await EventLogic.registerToEvent( EventRegistrationDTO(
-          widget.event.eventId, widget.event.sessionId, timeWindowID, 0,
+      await EventLogic.registerToEvent(
+        EventRegistrationDTO(
+          widget.event.eventId,
+          widget.event.sessionId,
+          widget.event.timeWindows[timeWindowIndex].id,
+          widget.volunteer.id,
         ),
       );
+      setState(() {
+        widget.event.timeWindows[timeWindowIndex].participants
+            .add(widget.volunteer.id);
+      });
     } catch (e) {
       print(e);
     }
+  }
 
+  bool isJoined(int timeWindowIndex) {
+    return widget.event.timeWindows[timeWindowIndex].participants
+        .contains(widget.volunteer.id);
+  }
+
+  bool isFull(int timeWindowIndex) {
+    return widget.event.timeWindows[timeWindowIndex].participants.length >=
+        widget.event.timeWindows[timeWindowIndex].maxParticipants;
+  }
+
+  Future<void> onLeave(int timeWindowIndex) async {
+    print('leave');
+    try {
+      await EventLogic.removeToEvent(
+        EventRegistrationDTO(
+          widget.event.eventId,
+          widget.event.sessionId,
+          widget.event.timeWindows[timeWindowIndex].id,
+          widget.volunteer.id,
+        ),
+      );
+      setState(() {
+        widget.event.timeWindows[timeWindowIndex].participants
+            .remove(widget.volunteer.id);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -47,30 +84,63 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(widget.event.name),
-          Text(widget.event.description),
+          const SizedBox(height: 20),
+          Text(
+            widget.event.name,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            widget.event.description,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
               itemCount: widget.event.timeWindows.length,
               itemBuilder: (context, index) {
                 return Container(
                   padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
                   decoration: BoxDecoration(
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                          '${dateFormat.format(widget.event.timeWindows[index].start)} - ${dateFormat.format(widget.event.timeWindows[index].end)}'),
-                      Text(
-                          '${widget.event.timeWindows[index].maxParticipants}'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            dateFormat
+                                .format(widget.event.timeWindows[index].start),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(50, 5, 0, 5),
+                            child: Text(
+                              '${widget.event.timeWindows[index].participants.length} / ${widget.event.timeWindows[index].maxParticipants} participants',
+                              style: TextStyle(
+                                color:
+                                    isFull(index) ? Colors.red : Colors.green,
+                              ),
+                            ),
+                          ),
+                          Text(dateFormat
+                              .format(widget.event.timeWindows[index].end)),
+                        ],
+                      ),
                       OutlinedButton(
-                        onPressed: () =>
-                            onJoin(widget.event.timeWindows[index].id),
-                        child: const Text("S'inscrire"),
+                        onPressed: isFull(index) && !isJoined(index)
+                            ? null
+                            : () => isJoined(index)
+                                ? onLeave(index)
+                                : onJoin(index),
+                        child: widget.event.timeWindows[index].participants
+                                .contains(widget.volunteer.id)
+                            ? const Text("Se désinscrire")
+                            : const Text("S'inscrire"),
                       )
                     ],
                   ),

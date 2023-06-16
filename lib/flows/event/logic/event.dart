@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:ffi';
 
+import 'package:pa_mobile/core/model/event/EventRegistrationDTO.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
-
+import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/shared/services/request/http_requests.dart';
-
-import '../../../core/model/event/EventRegistrationDTO.dart';
 
 class EventLogic {
   static String get eventRoot => '/event';
@@ -25,9 +23,35 @@ class EventLogic {
     }
   }
 
+  static Future<VolunteerResponseDto> getConnectVolunteer() async {
+    final response = await HttpRequests.get('/volunteer/token', null);
+
+    switch (response.statusCode) {
+      case 200:
+        return VolunteerResponseDto.decode(response.body);
+      default:
+        throw Exception('Error${response.statusCode}');
+    }
+  }
+
   static Future<void> registerToEvent(EventRegistrationDTO dto) async {
     final response = await HttpRequests.post(
-      '$eventRoot/register/',
+      '$eventRoot/register',
+      dto.encode(),
+      null,
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        return;
+      default:
+        throw Exception('Error${response.statusCode}');
+    }
+  }
+
+  static Future<void> removeToEvent(EventRegistrationDTO dto) async {
+    final response = await HttpRequests.delete(
+      '$eventRoot/unregister',
       dto.encode(),
       null,
     );
@@ -40,3 +64,5 @@ class EventLogic {
     }
   }
 }
+
+
