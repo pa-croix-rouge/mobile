@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
             await StayLoginSecureStorage().notStayLogin();
           }
           await Navigator.of(context)
-              .pushNamedAndRemoveUntil(EventScreen.routeName, (route) => false);
+              .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

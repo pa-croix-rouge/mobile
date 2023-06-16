@@ -75,7 +75,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
+        title: const Text('Evenement'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () async {

@@ -20,7 +20,7 @@ class EventScreen extends StatefulWidget {
 class _EventScreenState extends State<EventScreen> {
   DateTime _selectedDay = DateTime(2000, 06, 1);
 
-  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
   List<EventResponseDTO> localUnitEvents = [];
   late final ValueNotifier<List<EventResponseDTO>> selectedEvent;
 
@@ -67,95 +67,78 @@ class _EventScreenState extends State<EventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Account'),
-        leading: IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () async {
-            await JwtSecureStorage().deleteJwtToken();
-            await StayLoginSecureStorage().notStayLogin();
-            await Navigator.of(context).pushNamedAndRemoveUntil(
-                LoginScreen.routeName, (route) => false);
-          },
-        ),
-      ),
-      body: Center(
-        //show volunteer info
-        child: FutureBuilder(
-          future: load(),
-          builder: (context, AsyncSnapshot<List<EventResponseDTO>> snapshot) {
-            if (!snapshot.hasData) {
-              return const CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Something went wrong :('),
-              );
-            }
-            localUnitEvents = snapshot.data!;
-            return Column(
-              children: [
-                TableCalendar<EventResponseDTO>(
-                  firstDay: DateTime.utc(1999, 1, 1),
-                  lastDay: DateTime.utc(2030, 3, 14),
-                  focusedDay: _selectedDay,
-                  locale: 'fr_FR',
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  calendarFormat: _calendarFormat,
-                  onDaySelected: _onDaySelected,
-                  eventLoader: _getEventsForDay,
-                  onFormatChanged: (format) {
-                    if (_calendarFormat != format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
-                    }
-                  },
-                  onPageChanged: (focusedDay) {
-                    _selectedDay = focusedDay;
-                  },
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: ValueListenableBuilder<List<EventResponseDTO>>(
-                    valueListenable: selectedEvent,
-                    builder: (context, value, _) {
-                      return ListView.builder(
-                        itemCount: value.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                              vertical: 4.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: ListTile(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute<EventDetailScreen>(
-                                    builder: (context) =>
-                                        EventDetailScreen(event: value[index], volunteer: volunteer),
-                                  )),
-                              title: Text(value[index].name),
-                            ),
-                          );
-                        },
+    return FutureBuilder(
+      future: load(),
+      builder: (context, AsyncSnapshot<List<EventResponseDTO>> snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text('Something went wrong :('),
+          );
+        }
+        localUnitEvents = snapshot.data!;
+        return Column(
+          children: [
+            TableCalendar<EventResponseDTO>(
+              firstDay: DateTime.utc(1999, 1, 1),
+              lastDay: DateTime.utc(2030, 3, 14),
+              focusedDay: _selectedDay,
+              locale: 'fr_FR',
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              calendarFormat: _calendarFormat,
+              onDaySelected: _onDaySelected,
+              eventLoader: _getEventsForDay,
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                _selectedDay = focusedDay;
+              },
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ValueListenableBuilder<List<EventResponseDTO>>(
+                valueListenable: selectedEvent,
+                builder: (context, value, _) {
+                  return ListView.builder(
+                    itemCount: value.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: ListTile(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute<EventDetailScreen>(
+                                builder: (context) =>
+                                    EventDetailScreen(event: value[index], volunteer: volunteer),
+                              )),
+                          title: Text(value[index].name),
+                        ),
                       );
                     },
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
