@@ -39,16 +39,16 @@ class _HomeScreenState extends State<HomeScreen> {
         //show volunteer info
         child: FutureBuilder(
           future: volunteerInfo,
-          builder: (context, AsyncSnapshot snapshot) {
+          builder: (context, AsyncSnapshot<VolunteerResponseDto> snapshot) {
             if (ConnectionState.active != null && !snapshot.hasData) {
-              return const Text("Loading");
+              return const CircularProgressIndicator();
             }
             if (ConnectionState.done != null && snapshot.hasError) {
               return const Center(
                 child: Text('Something went wrong :('),
               );
             }
-            final volunteer = snapshot.data as VolunteerResponseDto;
+            final volunteer = snapshot.data!;
             return Column(
               children: [
                 Text('ID : ${volunteer.id}'),
