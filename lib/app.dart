@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
-import 'package:pa_mobile/shared/services/secure_storage.dart';
+import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.isLogged});
@@ -23,19 +24,21 @@ class _MyAppState extends State<MyApp> {
           accentColor: const Color(0xFF13B9FF),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute:
-           widget.isLogged ? HomeScreen.routeName : LoginScreen.routeName,
+           widget.isLogged ? AccountDetailsScreen.routeName : LoginScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
+        AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
       },
     );
   }
 
   Future<bool> isLogged() async {
-    final jwtToken = await SecureStorage().readJwtToken();
+    final jwtToken = await JwtSecureStorage().readJwtToken();
     return jwtToken != null;
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
+import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
-import 'package:pa_mobile/shared/services/secure_storage.dart';
+import 'package:pa_mobile/flows/home/ui/home_screen.dart';
+import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
+import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
 import 'package:pa_mobile/shared/widget/cr_checkbox.dart';
 
@@ -32,10 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text(
           'Se connecter',
-          style: Theme
-              .of(context)
-              .textTheme
-              .headlineSmall,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
       body: SafeArea(
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     valueListenable: keepMeSignedCheckBox,
                     builder: (context, value, _) {
                       return CrCheckBox(
-                        text: "Rester connecté",
+                        text: 'Rester connecté',
                         isChecked: value,
                         onChanged: onCheckBoxChange,
                       );
@@ -95,13 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {},
                         child: const Text("S'inscrire"),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      TextButton(
-                        onPressed: () async {print(await SecureStorage().readJwtToken());},
-                        child: const Text("S'inscrire"),
-                      ),
                     ],
                   ),
                 ],
@@ -116,38 +109,41 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onCheckBoxChange(bool? value) {
     if (value != null) {
-      keepMeSignedCheckBox.value = value;
-      keepMeSignedCheckBox.notifyListeners();
+      keepMeSignedCheckBox..value = value
+      ..notifyListeners();
     }
   }
 
   Future<void> onLoginPressed() async {
     if (_loginKey.currentState!.validate()) {
       try {
-        if (await Authentication.login(LoginRequestDto(
+        if (await Authentication.login(
+          LoginRequestDto(
             username: widget.usernameController.text,
             password: widget.passwordController.text,
-          ),)) {
-          Navigator.pushNamed(context, '/home');
+          ),
+        )) {
+          if (keepMeSignedCheckBox.value) {
+            await StayLoginSecureStorage().stayLogin();
+          } else {
+            await StayLoginSecureStorage().notStayLogin();
+          }
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(AccountDetailsScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: const Text('Wrong username and password combination'),
-              backgroundColor: Theme.of(context)
-                  .colorScheme
-                  .error,
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
-
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('server inaccessible'),
-            backgroundColor: Theme
-                .of(context)
-                .colorScheme
-                .error,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
