@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute:
-           widget.isLogged ? AccountDetailsScreen.routeName : LoginScreen.routeName,
+           widget.isLogged ? EventScreen.routeName : LoginScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),

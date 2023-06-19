@@ -5,7 +5,7 @@ import 'package:pa_mobile/shared/services/request/http_requests.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
 class Authentication {
-  static String get route => '/login/beneficiary';
+  static String get route => '/login';
 
   static Future<bool> login(LoginRequestDto loginDto) async {
     final response = await HttpRequests.post(
