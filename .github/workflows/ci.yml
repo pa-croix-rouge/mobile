@@ -40,15 +40,8 @@ jobs:
       - name: Copy properties
         run: cp /root/pa-cxr/key/key.properties ./android/app/.
 
-  clean:
-    needs: install
-    runs-on: self-hosted
-    steps:
-      - name: Clean
-        run: flutter clean
-
   build:
-    needs: clean
+    needs: install
     runs-on: self-hosted
     steps:
       - name: Build
