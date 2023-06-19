@@ -5,6 +5,15 @@ abstract class Encodable {
 }
 
 class EncodeTools {
+
+  static DateTime decodeDateTime(String strDate) {
+    final i = strDate.indexOf('[');
+    if(i != -1) {
+      return DateTime.parse( strDate.substring(0, i) );
+    }
+   return DateTime.parse( strDate );
+  }
+
   static String decodeString(String body, String key) {
     try {
       final jsonObject = jsonDecode(body);
