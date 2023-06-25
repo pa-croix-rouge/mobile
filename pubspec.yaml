@@ -1,6 +1,6 @@
 name: pa_mobile
 description: Mobile Croix Rouge
-version: 1.0.1+19062023
+version: 1.0.1+19062023.2
 publish_to: none
 
 environment:

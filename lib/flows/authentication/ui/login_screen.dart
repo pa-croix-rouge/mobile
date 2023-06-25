@@ -140,10 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } catch (e) {
-        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('server inaccessible'),
+            content: Text(e.toString()),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
