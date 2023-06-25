@@ -5,7 +5,7 @@ import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
-import 'flows/event/ui/event_screen.dart';
+import 'flows/event/ui/event_calendar_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.isLogged});
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute:
-           widget.isLogged ? AccountDetailsScreen.routeName : LoginScreen.routeName,
+           widget.isLogged ? EventScreen.routeName : LoginScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
