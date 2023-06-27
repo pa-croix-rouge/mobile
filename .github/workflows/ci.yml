@@ -81,3 +81,6 @@ jobs:
           cp /tmp/app-release.apk ./target/.
           cp ~/pa-cxr/scan.rb ./scan/scan.rb
           docker-compose up --build --exit-code-from scan
+
+      - name: Upload report
+        run: cp output/report.pdf ~/pa-cxr/prod/mobile/.
