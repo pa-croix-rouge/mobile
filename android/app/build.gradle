@@ -52,7 +52,7 @@ android {
     defaultConfig {
         applicationId "croix.rouge.mobile.com"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -72,25 +72,6 @@ android {
                 storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
                 storePassword keystoreProperties['storePassword']
             }
-        }
-    }
-
-    flavorDimensions "default"
-    productFlavors {
-        production {
-            dimension "default"
-            applicationIdSuffix ""
-            manifestPlaceholders = [appName: "Mobile"]
-        }
-        staging {
-            dimension "default"
-            applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "[STG] Mobile"]
-        }
-        development {
-            dimension "default"
-            applicationIdSuffix ".dev"
-            manifestPlaceholders = [appName: "[DEV] Mobile"]
         }
     }
 

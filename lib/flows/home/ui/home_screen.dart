@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
+import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
 import 'package:pa_mobile/flows/home/logic/home.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   static const routeName = '/home';
 
   @override
@@ -14,6 +17,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<VolunteerResponseDto> volunteerInfo;
+
+  int _screenIndex = 1;
+  String title = "Profile";
 
   @override
   Widget build(BuildContext context) {
@@ -24,46 +30,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
-        leading: IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () async {
-            await JwtSecureStorage().deleteJwtToken();
-            await StayLoginSecureStorage().notStayLogin();
-            await Navigator.of(context).pushNamedAndRemoveUntil(
-                LoginScreen.routeName, (route) => false);
-          },
-        ),
+        title: Text(title,
+            style: Theme.of(context).textTheme.headlineLarge,),
       ),
-      body: Center(
-        //show volunteer info
-        child: FutureBuilder(
-          future: volunteerInfo,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (ConnectionState.active != null && !snapshot.hasData) {
-              return const Text("Loading");
-            }
-            if (ConnectionState.done != null && snapshot.hasError) {
-              return const Center(
-                child: Text('Something went wrong :('),
-              );
-            }
-            final volunteer = snapshot.data as VolunteerResponseDto;
-            return Column(
-              children: [
-                Text('ID : ${volunteer.id}'),
-                Text('username : ${volunteer.username}'),
-                Text('firstName : ${volunteer.firstName}'),
-                Text('lastName : ${volunteer.lastName}'),
-                Text('phoneNumber : ${volunteer.phoneNumber}'),
-                Text('isValidated : ${volunteer.isValidated}'),
-                Text('localUnitId : ${volunteer.localUnitId}'),
-              ],
-            );
-          },
-        ),
+      body: getBody(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _screenIndex,
+        onTap: _onNavigationChanged,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).colorScheme.tertiary,
+        unselectedItemColor: Theme.of(context).colorScheme.secondary,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Evenements',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
+  }
+
+  Widget getBody() {
+    if (_screenIndex == 0) {
+      return const EventScreen();
+    } else if (_screenIndex == 1) {
+      return const Text('Not implemented yet');
+    } else {
+      return const Text('Error');
+    }
+  }
+
+  void _onNavigationChanged(int index) {
+    setState(() {
+      _screenIndex = index;
+      if (_screenIndex == 0) {
+        title = 'Evenements';
+      } else if (_screenIndex == 1) {
+        title = 'Profile';
+      } else {
+        title = 'Error';
+      }
+    });
   }
 
   @override

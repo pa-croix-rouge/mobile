@@ -11,9 +11,7 @@ class Authentication {
     final response = await HttpRequests.post(
       route,
       loginDto.encode(),
-      null,
     );
-
     switch (response.statusCode) {
       case 200:
         final loginResponse = LoginResponseDto.decode(response.body);

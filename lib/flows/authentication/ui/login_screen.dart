@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
+import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
-import 'package:pa_mobile/flows/event/ui/event_screen.dart';
+import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
@@ -95,15 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {},
                         child: const Text("S'inscrire"),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          print(await JwtSecureStorage().readJwtToken());
-                        },
-                        child: const Text("S'inscrire"),
-                      ),
                     ],
                   ),
                 ],
@@ -118,8 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onCheckBoxChange(bool? value) {
     if (value != null) {
-      keepMeSignedCheckBox.value = value;
-      keepMeSignedCheckBox.notifyListeners();
+      keepMeSignedCheckBox..value = value
+      ..notifyListeners();
     }
   }
 
@@ -138,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
             await StayLoginSecureStorage().notStayLogin();
           }
           await Navigator.of(context)
-              .pushNamedAndRemoveUntil(EventScreen.routeName, (route) => false);
+              .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -148,10 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } catch (e) {
-        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('server inaccessible'),
+            content: Text(e.toString()),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

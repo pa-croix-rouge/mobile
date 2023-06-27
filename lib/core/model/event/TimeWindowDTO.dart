@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:pa_mobile/core/utils/encode.dart';
 
 class TimeWindowDTO {

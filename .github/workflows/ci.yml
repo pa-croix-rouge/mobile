@@ -50,7 +50,7 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
           ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-        run: flutter build apk --release --flavor production
+        run: flutter build apk --release
 
   tests:
     needs: build
@@ -66,7 +66,7 @@ jobs:
       - name: Prepare file hierarchy
         run: |
           mkdir -p target
-          cp build/app/outputs/flutter-apk/app-production-release.apk /tmp/.
+          cp build/app/outputs/flutter-apk/app-release.apk /tmp/.
 
       - name: Checkout repository mobsf-ci
         uses: actions/checkout@v2
@@ -75,9 +75,9 @@ jobs:
 
       - name: Run MobSF Analysis
         env:
-          TARGET_PATH: 'target/app-production-release.apk'
+          TARGET_PATH: 'target/app-release.apk'
         run: |
           mkdir target
-          cp /tmp/app-production-release.apk ./target/.
+          cp /tmp/app-release.apk ./target/.
           cp ~/pa-cxr/scan.rb ./scan/scan.rb
           docker-compose up --build --exit-code-from scan

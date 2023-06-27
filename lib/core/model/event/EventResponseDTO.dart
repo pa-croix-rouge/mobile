@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:pa_mobile/core/model/event/TimeWindowDTO.dart';
 import 'package:pa_mobile/core/utils/encode.dart';
 
