@@ -7,22 +7,24 @@ class SecureStorage {
 
   static final SecureStorage _instance = SecureStorage._internal();
 
-  static const FlutterSecureStorage _storage = FlutterSecureStorage();
-
-  static AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );
+  static const FlutterSecureStorage _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+    ),
+  );
 
   static Future<String?> get(String key) async {
-    return _storage.read(key: key, aOptions: _getAndroidOptions());
+    return _storage.read(key: key);
   }
 
   static Future<void> set(String key, String value) async {
     await _storage.write(
-        key: key, value: value, aOptions: _getAndroidOptions());
+      key: key,
+      value: value,
+    );
   }
 
   static Future<void> delete(String key) async {
-    await _storage.delete(key: key, aOptions: _getAndroidOptions());
+    await _storage.delete(key: key);
   }
 }
