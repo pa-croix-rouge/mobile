@@ -18,7 +18,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    final logged = isLogged();
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
@@ -30,18 +29,13 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute:
-           widget.isLogged ? EventScreen.routeName : LoginScreen.routeName,
+           widget.isLogged ? HomeScreen.routeName : LoginScreen.routeName,
       routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
-        EventScreen.routeName: (context) => EventScreen(),
+        EventScreen.routeName: (context) => const EventScreen(),
         AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
       },
     );
-  }
-
-  Future<bool> isLogged() async {
-    final jwtToken = await JwtSecureStorage().readJwtToken();
-    return jwtToken != null;
   }
 }

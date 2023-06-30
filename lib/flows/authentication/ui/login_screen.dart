@@ -110,8 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onCheckBoxChange(bool? value) {
     if (value != null) {
-      keepMeSignedCheckBox..value = value
-      ..notifyListeners();
+      keepMeSignedCheckBox
+        ..value = value
+        ..notifyListeners();
     }
   }
 

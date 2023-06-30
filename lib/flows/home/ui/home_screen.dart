@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
@@ -16,17 +17,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<VolunteerResponseDto> volunteerInfo;
+  late Future<BeneficiaryResponseDto> beneficiaryInfo;
 
   int _screenIndex = 1;
-  String title = "Profile";
+  String title = 'Profile';
 
   @override
   Widget build(BuildContext context) {
     //faire la requette pour recuperer les infos de l'utilisateur
     //si la requette echoue, on redirige vers la page de login + delete token + delete stay login
 
-    Home.getVolunteerInfo();
+    Home.getBeneficiaryInfo();
 
     return Scaffold(
       appBar: AppBar(
@@ -84,6 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getVolunteer() async {
-    volunteerInfo = Home.getVolunteerInfo();
+    beneficiaryInfo = Home.getBeneficiaryInfo();
   }
 }

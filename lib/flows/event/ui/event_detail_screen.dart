@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/event/EventRegistrationDTO.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
@@ -7,10 +8,10 @@ import 'package:pa_mobile/flows/event/logic/event.dart';
 
 class EventDetailScreen extends StatefulWidget {
   const EventDetailScreen(
-      {super.key, required this.event, required this.volunteer});
+      {super.key, required this.event, required this.beneficiary});
 
   final EventResponseDTO event;
-  final VolunteerResponseDto volunteer;
+  final BeneficiaryResponseDto beneficiary;
 
   static const routeName = '/event';
 
@@ -29,12 +30,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           widget.event.eventId,
           widget.event.sessionId,
           widget.event.timeWindows[timeWindowIndex].id,
-          widget.volunteer.id,
+          widget.beneficiary.id,
         ),
       );
       setState(() {
         widget.event.timeWindows[timeWindowIndex].participants
-            .add(widget.volunteer.id);
+            .add(widget.beneficiary.id);
       });
     } catch (e) {
       print(e);
@@ -43,7 +44,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   bool isJoined(int timeWindowIndex) {
     return widget.event.timeWindows[timeWindowIndex].participants
-        .contains(widget.volunteer.id);
+        .contains(widget.beneficiary.id);
   }
 
   bool isFull(int timeWindowIndex) {
@@ -59,12 +60,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           widget.event.eventId,
           widget.event.sessionId,
           widget.event.timeWindows[timeWindowIndex].id,
-          widget.volunteer.id,
+          widget.beneficiary.id,
         ),
       );
       setState(() {
         widget.event.timeWindows[timeWindowIndex].participants
-            .remove(widget.volunteer.id);
+            .remove(widget.beneficiary.id);
       });
     } catch (e) {
       print(e);
@@ -138,7 +139,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 ? onLeave(index)
                                 : onJoin(index),
                         child: widget.event.timeWindows[index].participants
-                                .contains(widget.volunteer.id)
+                                .contains(widget.beneficiary.id)
                             ? const Text("Se désinscrire")
                             : const Text("S'inscrire"),
                       )

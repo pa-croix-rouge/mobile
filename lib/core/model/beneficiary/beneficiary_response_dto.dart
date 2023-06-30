@@ -3,9 +3,17 @@ import 'dart:ffi';
 import 'package:pa_mobile/core/utils/encode.dart';
 
 class BeneficiaryResponseDto {
-  BeneficiaryResponseDto(this.username, this.firstName, this.lastName,
-      this.phoneNumber, this.isValidated, this.localUnitId);
+  BeneficiaryResponseDto(
+    this.id,
+    this.username,
+    this.firstName,
+    this.lastName,
+    this.phoneNumber,
+    this.isValidated,
+    this.localUnitId,
+  );
 
+  final int id;
   final String username;
   final String firstName;
   final String lastName;
@@ -14,6 +22,7 @@ class BeneficiaryResponseDto {
   final int localUnitId;
 
   static BeneficiaryResponseDto decode(String jsonObject) {
+    final id = EncodeTools.decodeInt(jsonObject, 'id');
     final username = EncodeTools.decodeString(jsonObject, 'username');
     final firstName = EncodeTools.decodeString(jsonObject, 'firstName');
     final lastName = EncodeTools.decodeString(jsonObject, 'lastName');
@@ -21,6 +30,7 @@ class BeneficiaryResponseDto {
     final isValidated = EncodeTools.decodeBool(jsonObject, 'isValidated');
     final localUnitId = EncodeTools.decodeInt(jsonObject, 'localUnitId');
     return BeneficiaryResponseDto(
+      id,
       username,
       firstName,
       lastName,

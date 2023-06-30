@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
@@ -24,7 +25,7 @@ class _EventScreenState extends State<EventScreen> {
   List<EventResponseDTO> localUnitEvents = [];
   late final ValueNotifier<List<EventResponseDTO>> selectedEvent;
 
-  late VolunteerResponseDto volunteer;
+  late BeneficiaryResponseDto beneficiary;
 
   List<EventResponseDTO> _getEventsForDay(DateTime day) {
     return localUnitEvents
@@ -44,11 +45,11 @@ class _EventScreenState extends State<EventScreen> {
 
   Future<List<EventResponseDTO>> load() async {
     final res = await Future.wait([
-      EventLogic.getConnectVolunteer(),
+      EventLogic.getConnectBeneficiary(),
       EventLogic.getLocalUnitEvent('1')
     ]);
 
-    volunteer = res[0] as VolunteerResponseDto;
+    beneficiary = res[0] as BeneficiaryResponseDto;
     return res[1] as List<EventResponseDTO>;
   }
 
@@ -70,13 +71,16 @@ class _EventScreenState extends State<EventScreen> {
     return FutureBuilder(
       future: load(),
       builder: (context, AsyncSnapshot<List<EventResponseDTO>> snapshot) {
+        if (snapshot.hasError) {
+          JwtSecureStorage().deleteJwtToken();
+          StayLoginSecureStorage().notStayLogin();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            LoginScreen.routeName,
+            (route) => false,
+          );
+        }
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return const Center(
-            child: Text('Something went wrong :('),
-          );
         }
         localUnitEvents = snapshot.data!;
         return Column(
@@ -125,8 +129,10 @@ class _EventScreenState extends State<EventScreen> {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute<EventDetailScreen>(
-                                builder: (context) =>
-                                    EventDetailScreen(event: value[index], volunteer: volunteer),
+                                builder: (context) => EventDetailScreen(
+                                  event: value[index],
+                                  beneficiary: beneficiary,
+                                ),
                               )),
                           title: Text(value[index].name),
                         ),

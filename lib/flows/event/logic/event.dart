@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/event/EventRegistrationDTO.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
@@ -23,12 +24,12 @@ class EventLogic {
     }
   }
 
-  static Future<VolunteerResponseDto> getConnectVolunteer() async {
-    final response = await HttpRequests.get('/volunteer/token', null);
+  static Future<BeneficiaryResponseDto> getConnectBeneficiary() async {
+    final response = await HttpRequests.get('/beneficiaries/token', null);
 
     switch (response.statusCode) {
       case 200:
-        return VolunteerResponseDto.decode(response.body);
+        return BeneficiaryResponseDto.decode(response.body);
       default:
         throw Exception('Error${response.statusCode}');
     }
