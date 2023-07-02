@@ -6,7 +6,6 @@ class LoginResponseDto {
   String jwtToken;
 
   static LoginResponseDto decode(String jsonObject) {
-    print(jsonObject);
     final token = EncodeTools.decodeString(jsonObject, 'jwtToken');
     final loginResponseDto = LoginResponseDto(jwtToken: token);
     return loginResponseDto;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
+import 'package:pa_mobile/flows/authentication/ui/inscription_screen.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
@@ -35,6 +36,7 @@ class _MyAppState extends State<MyApp> {
         LoginScreen.routeName: (context) => LoginScreen(),
         EventScreen.routeName: (context) => const EventScreen(),
         AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
+        InscriptionScreen.routeName: (context) => InscriptionScreen(),
       },
     );
   }

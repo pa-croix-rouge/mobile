@@ -14,7 +14,8 @@ class EventResponseDTO {
       this.maxParticipants,
       this.numberOfParticipants,
       this.timeWindows,
-      this.isRecurring);
+      this.isRecurring,
+      );
 
   final int eventId;
   final int sessionId;

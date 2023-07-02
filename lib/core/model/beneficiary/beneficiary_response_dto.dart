@@ -5,6 +5,7 @@ import 'package:pa_mobile/core/utils/encode.dart';
 class BeneficiaryResponseDto {
   BeneficiaryResponseDto(
     this.id,
+    this.birthDate,
     this.username,
     this.firstName,
     this.lastName,
@@ -14,6 +15,7 @@ class BeneficiaryResponseDto {
   );
 
   final int id;
+  final String birthDate;
   final String username;
   final String firstName;
   final String lastName;
@@ -23,6 +25,7 @@ class BeneficiaryResponseDto {
 
   static BeneficiaryResponseDto decode(String jsonObject) {
     final id = EncodeTools.decodeInt(jsonObject, 'id');
+    final birthDate = EncodeTools.decodeString(jsonObject, 'birthDate');
     final username = EncodeTools.decodeString(jsonObject, 'username');
     final firstName = EncodeTools.decodeString(jsonObject, 'firstName');
     final lastName = EncodeTools.decodeString(jsonObject, 'lastName');
@@ -31,6 +34,7 @@ class BeneficiaryResponseDto {
     final localUnitId = EncodeTools.decodeInt(jsonObject, 'localUnitId');
     return BeneficiaryResponseDto(
       id,
+      birthDate,
       username,
       firstName,
       lastName,

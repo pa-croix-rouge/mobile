@@ -9,7 +9,7 @@ class LoginRequestDto extends Encodable {
   String username;
   String password;
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'username': username,
       'password': password,
@@ -18,6 +18,6 @@ class LoginRequestDto extends Encodable {
 
   @override
   String encode() {
-    return jsonEncode(toMap());
+    return jsonEncode(toJson());
   }
 }

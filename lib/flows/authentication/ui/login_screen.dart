@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
 import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
+import 'package:pa_mobile/flows/authentication/ui/inscription_screen.dart';
 import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
@@ -50,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextFormField(
                     decoration: const InputDecoration(
-                      hintText: 'Username',
+                      hintText: 'Email',
                       icon: Icon(Icons.account_circle),
                       fillColor: Colors.white,
                     ),
@@ -93,7 +94,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: EdgeInsets.all(10),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            InscriptionScreen.routeName,
+                          );
+                        },
                         child: const Text("S'inscrire"),
                       ),
                     ],

@@ -74,13 +74,17 @@ class _EventScreenState extends State<EventScreen> {
         child: FutureBuilder(
           future: EventLogic.getLocalUnitEvent('1'),
           builder: (context, AsyncSnapshot<List<EventResponseDTO>> snapshot) {
+            if (snapshot.hasError) {
+              JwtSecureStorage().deleteJwtToken();
+              StayLoginSecureStorage().notStayLogin();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                LoginScreen.routeName,
+                    (route) => false,
+              );
+            }
             if (!snapshot.hasData) {
               return const CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Something went wrong :('),
-              );
             }
             localUnitEvents = snapshot.data!;
             return Column(

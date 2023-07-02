@@ -74,9 +74,10 @@ class _EventScreenState extends State<EventScreen> {
         if (snapshot.hasError) {
           JwtSecureStorage().deleteJwtToken();
           StayLoginSecureStorage().notStayLogin();
-          Navigator.of(context).pushNamedAndRemoveUntil(
+          Navigator.pushNamedAndRemoveUntil(
+            context,
             LoginScreen.routeName,
-            (route) => false,
+                (route) => false,
           );
         }
         if (!snapshot.hasData) {
