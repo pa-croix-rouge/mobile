@@ -48,12 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //faire la requette pour recuperer les infos de l'utilisateur
-    //si la requette echoue, on redirige vers la page de login + delete token + delete stay login
-
     Home.getBeneficiaryInfo();
-
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         title: Text(
           title,
@@ -112,7 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
             beneficiary = snapshot.data!;
             return Column(
               children: [
-                //show beneficiary info
                 Container(
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),

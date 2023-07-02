@@ -20,6 +20,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         beneficiaryRepository: BeneficiaryRepository(),
       ),
       child: Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
           title: const Text('Account Details'),
         ),

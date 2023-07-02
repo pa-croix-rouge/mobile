@@ -41,14 +41,12 @@ class EventResponseDTO {
     final localUnitId = jsonObject['localUnitId'] as int;
     final maxParticipants = jsonObject['maxParticipants'] as int;
     final numberOfParticipants = jsonObject['numberOfParticipants'] as int;
-    // final timeWindows = jsonObject['timeWindows'] as List<TimeWindowDTO>;
 
     final timeWindows = <TimeWindowDTO>[];
     for (final element in jsonObject['timeWindows'] as List<dynamic>) {
       timeWindows.add(TimeWindowDTO.decode(element as Map<String, dynamic>));
     }
 
-    // final timeWindows = List<TimeWindowDTO>.empty();
     final isRecurring = jsonObject['recurring'] as bool;
 
     return EventResponseDTO(

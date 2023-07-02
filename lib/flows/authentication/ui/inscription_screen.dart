@@ -7,6 +7,8 @@ import 'package:pa_mobile/flows/authentication/logic/register.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
 
 class InscriptionScreen extends StatefulWidget {
+  const InscriptionScreen({super.key});
+
   static const routeName = '/register';
 
   @override
@@ -22,6 +24,9 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   TextEditingController confirmPasswordValidator = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController dateInput = TextEditingController();
+  TextEditingController alertFirstName = TextEditingController();
+  TextEditingController alertLastName = TextEditingController();
+  TextEditingController alertBirthDate = TextEditingController();
   final List<FocusNode> _focusNodes = [
     FocusNode(),
     FocusNode(),
@@ -44,28 +49,21 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //String username; done
-    //   String password; done
-    //   String firstName; done
-    //   String lastName; done
-    //   String phoneNumber; done
-    //   String localUnitCode; done
-    //   DateTime birthDate; done
-    //   String socialWorkerNumber; done
-    //   List<FamilyMemberCreationRequest> familyMembers;
-
-    // faire le formulaire pour tout ces champs
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         title: const Text('Inscription'),
       ),
       body: SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset : false,
           body: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Form(
                 key: _registerKey,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
@@ -214,44 +212,42 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                       validator: FieldValidators.socialWorkerNumberValidator,
                       focusNode: _focusNodes[8],
                     ),
-                    // show each family member
-                    ListView(
-                      shrinkWrap: true,
-                      children: [
-                        for (final familyMember in familyMembers)
-                          ListTile(
-                            title: Text(
-                                '${familyMember.firstName} ${familyMember.lastName}'),
-                            subtitle: Text(
-                              DateFormat('yyyy-MM-dd')
-                                  .format(familyMember.birthDate),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  familyMembers.remove(familyMember);
-                                });
-                              },
-                            ),
-                          ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final familyMember = await openDialogFamily();
-                            if (familyMember != null) {
-                              setState(() {
-                                familyMembers.add(familyMember);
-                              });
-                            }
-                          },
-                          child: const Text('Ajouter un membre de la famille'),
-                        ),
-                      ],
+                    ElevatedButton(
+                      onPressed: () async {
+                        final familyMember = await openDialogFamily();
+                        if (familyMember != null) {
+                          setState(() {
+                            familyMembers.add(familyMember);
+                          });
+                        }
+                      },
+                      child: const Text('Ajouter un membre de la famille'),
                     ),
                   ],
                 ),
               ),
-              const Spacer(),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: familyMembers.length,
+
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text('${familyMembers[index].firstName} ${familyMembers[index].lastName}'),
+                    subtitle: Text(
+                      DateFormat('yyyy-MM-dd')
+                          .format(familyMembers[index].birthDate),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        setState(() {
+                          familyMembers.remove(familyMembers[index]);
+                        });
+                      },
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -263,10 +259,13 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
       showDialog<FamilyMemberCreationRequest>(
         context: context,
         builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: const Text('Add a family member'),
           content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Spacer(),
               TextFormField(
                 decoration: const InputDecoration(
                   hintText: 'Prénom',
@@ -317,7 +316,6 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                   } else {}
                 },
               ),
-              const Spacer(),
             ],
           ),
           actions: [

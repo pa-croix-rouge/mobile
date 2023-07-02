@@ -57,6 +57,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         title: const Text('Account'),
         leading: IconButton(
@@ -70,7 +71,6 @@ class _EventScreenState extends State<EventScreen> {
         ),
       ),
       body: Center(
-        //show volunteer info
         child: FutureBuilder(
           future: EventLogic.getLocalUnitEvent('1'),
           builder: (context, AsyncSnapshot<List<EventResponseDTO>> snapshot) {
