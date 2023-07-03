@@ -20,7 +20,7 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-  DateTime _selectedDay = DateTime(2000, 06, 1);
+  DateTime _selectedDay = DateTime.now();
 
   List<EventResponseDTO> localUnitEvents = [];
   late final ValueNotifier<List<EventResponseDTO>> selectedEvent;

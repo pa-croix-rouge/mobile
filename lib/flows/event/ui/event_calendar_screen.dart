@@ -19,7 +19,7 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-  DateTime _selectedDay = DateTime(2000, 06, 1);
+  DateTime _selectedDay = DateTime.now();
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
   List<EventResponseDTO> localUnitEvents = [];
@@ -56,7 +56,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedDay = DateTime(2000, 06, 1);
+    _selectedDay = DateTime.now();
     selectedEvent = ValueNotifier(_getEventsForDay(_selectedDay));
   }
 

@@ -30,10 +30,10 @@ class AddressDTO extends Encodable{
   }
 
   static AddressDTO decode(Map<String, dynamic> jsonObject) {
-    final departmentCode = jsonObject['departmentCode'] as String;
-    final postalCode = jsonObject['postalCode'] as String;
-    final city = jsonObject['city'] as String;
-    final streetNumberAndName = jsonObject['streetNumberAndName'] as String;
+    final departmentCode = utf8.decode((jsonObject['departmentCode'] as String).runes.toList());
+    final postalCode = utf8.decode((jsonObject['postalCode'] as String).runes.toList());
+    final city = utf8.decode((jsonObject['city'] as String).runes.toList());
+    final streetNumberAndName = utf8.decode((jsonObject['streetNumberAndName'] as String).runes.toList());
 
     return AddressDTO(
       departmentCode,

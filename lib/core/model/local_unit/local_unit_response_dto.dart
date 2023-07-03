@@ -35,10 +35,10 @@ class LocalUnitResponseDTO extends Encodable {
 
   static LocalUnitResponseDTO decode(Map<String, dynamic> jsonObject) {
     final id = jsonObject['id'] as int;
-    final name = jsonObject['name'] as String;
+    final name = utf8.decode((jsonObject['name'] as String).runes.toList());
     final address = AddressDTO.decode(jsonObject['address'] as Map<String, dynamic>);
-    final managerName = jsonObject['managerName'] as String;
-    final code = jsonObject['code'] as String;
+    final managerName = utf8.decode((jsonObject['managerName'] as String).runes.toList());
+    final code = utf8.decode((jsonObject['code'] as String).runes.toList());
 
     return LocalUnitResponseDTO(
       id,

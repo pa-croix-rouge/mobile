@@ -10,12 +10,11 @@ class Register {
 
   static Future<List<LocalUnitResponseDTO>> loadLocalUnit() async {
     final response = await HttpRequests.get(route);
-    print(response.statusCode);
-    print(response.body);
+    print(utf8.decode(response.body.runes.toList()));
     switch (response.statusCode) {
       case 200:
         final list = <LocalUnitResponseDTO>[];
-        for (final element in jsonDecode(response.body) as List<dynamic>) {
+        for (final element in jsonDecode(utf8.decode(response.body.runes.toList())) as List<dynamic>) {
           list.add(LocalUnitResponseDTO.decode(element as Map<String, dynamic>));
         }
         return list;

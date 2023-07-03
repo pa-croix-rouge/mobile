@@ -174,7 +174,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                         if (pickedDate != null) {
                           print(pickedDate);
                           final formattedDate =
-                          DateFormat('yyyy-MM-dd').format(pickedDate);
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
                           print(formattedDate);
                           setState(() {
                             dateInput.text = formattedDate;
@@ -207,7 +207,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                                 .map((LocalUnitResponseDTO localUnit) {
                               return DropdownMenuItem(
                                 value:
-                                utf8.decode(localUnit.code.runes.toList()),
+                                    utf8.decode(localUnit.code.runes.toList()),
                                 child: Text(
                                     utf8.decode(localUnit.name.runes.toList())),
                               );
@@ -270,38 +270,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  if (_registerKey.currentState!.validate()) {
-                    print('first name: ${firstNameController.text}');
-                    print('last name: ${lastNameController.text}');
-                    print('email: ${emailController.text}');
-                    print('password: ${passwordController.text}');
-                    print('phone number: ${phoneNumberController.text}');
-                    print('birth date: ${dateInput.text}');
-                    print('local unit: $localUnitCode');
-                    print(
-                        'social worker number: ${socialWorkerNumberController
-                            .text}');
-                    print('family members: $familyMembers');
-
-                    //to BeneficiaryCreationRequest
-
-                    final beneficiaryCreationRequest =
-                    BeneficiaryCreationRequest(
-                      firstName: firstNameController.text,
-                      lastName: lastNameController.text,
-                      username: emailController.text,
-                      password: passwordController.text,
-                      phoneNumber: phoneNumberController.text,
-                      birthDate: dateInput.text,
-                      localUnitCode: localUnitCode,
-                      socialWorkerNumber: socialWorkerNumberController.text,
-                      familyMembers: familyMembers,
-                    );
-
-                    print(beneficiaryCreationRequest.toJson());
-                  }
-                },
+                onPressed: onRegister,
                 child: const Text('S\'inscrire'),
               ),
             ],
@@ -314,126 +283,141 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   Future<FamilyMemberCreationRequest?> openDialogFamily() =>
       showDialog<FamilyMemberCreationRequest>(
         context: context,
-        builder: (context) =>
-            AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              title: const Text('Ajouter un membre de la famille'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Prénom',
-                      icon: Icon(Icons.account_circle),
-                      fillColor: Colors.white,
-                    ),
-                    keyboardType: TextInputType.name,
-                    textInputAction: TextInputAction.next,
-                    validator: FieldValidators.nameValidator,
-                    controller: alertFirstName,
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Nom',
-                      icon: Icon(Icons.account_circle),
-                      fillColor: Colors.white,
-                    ),
-                    keyboardType: TextInputType.name,
-                    textInputAction: TextInputAction.next,
-                    validator: FieldValidators.nameValidator,
-                    controller: alertLastName,
-                  ),
-                  TextFormField(
-                    controller: alertBirthDate,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_today),
-                      labelText: 'Enter Date',
-                    ),
-                    readOnly: true,
-                    onTap: () async {
-                      final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate:
-                        DateTime.now().subtract(const Duration(days: 10950)),
-                        firstDate:
-                        DateTime.now().subtract(const Duration(days: 36500)),
-                        lastDate: DateTime.now(),
-                      );
-                      if (pickedDate != null) {
-                        final formattedDate =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
-                        setState(() {
-                          alertBirthDate.text = formattedDate;
-                        });
-                      } else {}
-                    },
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: submit,
-                  child: const Text('Add'),
-                ),
-              ],
-            ),
-      );
-
-  Future<void> openDialogFamilyMembers() {
-      return showDialog(
-        context: context,
         builder: (context) => AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text('Membres de la famille'),
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return Scaffold(
-                body: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: familyMembers.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
-                              '${familyMembers[index]
-                                  .firstName} ${familyMembers[index]
-                                  .lastName}'),
-                          subtitle: Text(
-                            familyMembers[index].birthDate,
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              setState(() {
-                                familyMembers.remove(familyMembers[index]);
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+          title: const Text('Ajouter un membre de la famille'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'Prénom',
+                  icon: Icon(Icons.account_circle),
+                  fillColor: Colors.white,
                 ),
-              );
-            },
+                keyboardType: TextInputType.name,
+                textInputAction: TextInputAction.next,
+                validator: FieldValidators.nameValidator,
+                controller: alertFirstName,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'Nom',
+                  icon: Icon(Icons.account_circle),
+                  fillColor: Colors.white,
+                ),
+                keyboardType: TextInputType.name,
+                textInputAction: TextInputAction.next,
+                validator: FieldValidators.nameValidator,
+                controller: alertLastName,
+              ),
+              TextFormField(
+                controller: alertBirthDate,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.calendar_today),
+                  labelText: 'Enter Date',
+                ),
+                readOnly: true,
+                onTap: () async {
+                  final pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate:
+                        DateTime.now().subtract(const Duration(days: 10950)),
+                    firstDate:
+                        DateTime.now().subtract(const Duration(days: 36500)),
+                    lastDate: DateTime.now(),
+                  );
+                  if (pickedDate != null) {
+                    final formattedDate =
+                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                    setState(() {
+                      alertBirthDate.text = formattedDate;
+                    });
+                  } else {}
+                },
+              ),
+            ],
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Ok'),
+              onPressed: submit,
+              child: const Text('Add'),
             ),
           ],
         ),
       );
+
+  Future<void> openDialogFamilyMembers() {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text('Membres de la famille'),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Scaffold(
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: familyMembers.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(
+                            '${familyMembers[index].firstName} ${familyMembers[index].lastName}'),
+                        subtitle: Text(
+                          familyMembers[index].birthDate,
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              familyMembers.remove(familyMembers[index]);
+                            });
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<bool> onRegister() async {
+    if (_registerKey.currentState!.validate()) {
+      final beneficiaryCreationRequest = BeneficiaryCreationRequest(
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        username: emailController.text,
+        password: passwordController.text,
+        phoneNumber: phoneNumberController.text,
+        birthDate: dateInput.text,
+        localUnitCode: localUnitCode,
+        socialWorkerNumber: socialWorkerNumberController.text,
+        familyMembers: familyMembers,
+      );
+      return Register.registerBeneficiary(beneficiaryCreationRequest);
     }
+    return false;
+  }
 
   void submit() {
     Navigator.of(context).pop(
