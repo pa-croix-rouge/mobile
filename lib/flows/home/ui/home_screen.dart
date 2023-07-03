@@ -200,7 +200,6 @@ class _HomeScreenState extends State<HomeScreen> {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
-        //logout button
         ElevatedButton(
           onPressed: () {
             JwtSecureStorage().deleteJwtToken();

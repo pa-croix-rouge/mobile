@@ -1,28 +1,28 @@
 import 'package:form_field_validator/form_field_validator.dart';
 
 class FieldValidators {
-  static FieldValidator<dynamic> get usernameValidator => MultiValidator([
-    RequiredValidator(errorText: 'Email is required'),
-    EmailValidator(errorText: 'Email is not valid'),
-  ]);
-
   static FieldValidator<dynamic> get emailValidator => MultiValidator([
-    RequiredValidator(errorText: 'Email is required'),
-    EmailValidator(errorText: 'Email is not valid'),
-
+    RequiredValidator(errorText: 'Email est requis'),
+    EmailValidator(errorText: 'Email n\'est pas valide'),
   ]);
 
-  static TextFieldValidator get passwordValidator => RequiredValidator(errorText: 'Password is required');
+  static FieldValidator<dynamic> get nameValidator => MultiValidator([
+    RequiredValidator(errorText: 'Nom est requis'),
+    MinLengthValidator(2, errorText: 'Un nom doit contenir au moins 2 caractères'),
+    MaxLengthValidator(50, errorText: 'Un nom doit contenir au plus 50 caractères'),
+  ]);
+
+  static TextFieldValidator get passwordValidator => RequiredValidator(errorText: 'Mot de passe requis');
 
   static FieldValidator<dynamic> get phoneNumberValidator => MultiValidator([
-    RequiredValidator(errorText: 'Phone number is required'),
-    MinLengthValidator(10, errorText: 'Phone number must be at least 10 digits long'),
-    MaxLengthValidator(10, errorText: 'Phone number must be at most 10 digits long'),
+    RequiredValidator(errorText: 'Numéro de téléphone requis'),
+    MinLengthValidator(10, errorText: 'Un numéro de téléphone doit 10 chiffres'),
+    MaxLengthValidator(10, errorText: 'Un numéro de téléphone doit 10 chiffres'),
   ]);
 
   static FieldValidator<dynamic> get socialWorkerNumberValidator => MultiValidator([
-    RequiredValidator(errorText: 'Social worker number is required'),
-    MinLengthValidator(15, errorText: 'Social worker number must be at least 15 digits long'),
-    MaxLengthValidator(15, errorText: 'Social worker number must be at most 15 digits long'),
+    RequiredValidator(errorText: 'Un numéro de travailleur social est requis'),
+    MinLengthValidator(15, errorText: 'Un numéro de travailleur social doit contenir au moins 15 chiffres'),
+    MaxLengthValidator(15, errorText: 'Un numéro de travailleur social doit contenir au plus 15 chiffres'),
   ]);
 }

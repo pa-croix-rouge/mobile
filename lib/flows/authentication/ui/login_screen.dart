@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.name,
                     textInputAction: TextInputAction.next,
                     controller: widget.usernameController,
-                    validator: FieldValidators.usernameValidator,
+                    validator: FieldValidators.emailValidator,
                     focusNode: _focusNodes[0],
                   ),
                   TextFormField(
@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       TextButton(
                         onPressed: onLoginPressed,
-                        child: const Text('Se connected'),
+                        child: const Text('Se connecter'),
                       ),
                       const Padding(
                         padding: EdgeInsets.all(10),

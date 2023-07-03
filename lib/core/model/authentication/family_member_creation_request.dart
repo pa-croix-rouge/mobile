@@ -11,7 +11,7 @@ class FamilyMemberCreationRequest extends Encodable {
 
   String firstName;
   String lastName;
-  DateTime birthDate;
+  String birthDate;
 
   Map<String, dynamic> toJson() {
     return {

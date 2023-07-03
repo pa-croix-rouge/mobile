@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:pa_mobile/core/model/authentication/beneficiary_creation_request.dart';
 import 'package:pa_mobile/core/model/authentication/family_member_creation_request.dart';
 import 'package:pa_mobile/core/model/local_unit/local_unit_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/logic/register.dart';
@@ -21,8 +24,12 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   final _registerKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordValidator = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController socialWorkerNumberController = TextEditingController();
+  String localUnitCode = '';
   TextEditingController dateInput = TextEditingController();
   TextEditingController alertFirstName = TextEditingController();
   TextEditingController alertLastName = TextEditingController();
@@ -50,13 +57,13 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Inscription'),
       ),
       body: SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomInset : false,
+          resizeToAvoidBottomInset: false,
           body: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -75,7 +82,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                       keyboardType: TextInputType.name,
                       textInputAction: TextInputAction.next,
                       controller: emailController,
-                      validator: FieldValidators.usernameValidator,
+                      validator: FieldValidators.emailValidator,
                       focusNode: _focusNodes[0],
                     ),
                     TextFormField(
@@ -98,8 +105,13 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                       ),
                       keyboardType: TextInputType.visiblePassword,
                       textInputAction: TextInputAction.next,
-                      controller: confirmPasswordValidator,
-                      validator: FieldValidators.passwordValidator,
+                      controller: confirmPasswordController,
+                      validator: (value) {
+                        if (value != passwordController.text) {
+                          return 'Les mots de passe ne correspondent pas';
+                        }
+                        return null;
+                      },
                       focusNode: _focusNodes[2],
                     ),
                     TextFormField(
@@ -109,8 +121,9 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                         fillColor: Colors.white,
                       ),
                       keyboardType: TextInputType.name,
+                      controller: firstNameController,
                       textInputAction: TextInputAction.next,
-                      validator: FieldValidators.usernameValidator,
+                      validator: FieldValidators.nameValidator,
                       focusNode: _focusNodes[3],
                     ),
                     TextFormField(
@@ -121,7 +134,8 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                       ),
                       keyboardType: TextInputType.name,
                       textInputAction: TextInputAction.next,
-                      validator: FieldValidators.usernameValidator,
+                      controller: lastNameController,
+                      validator: FieldValidators.nameValidator,
                       focusNode: _focusNodes[4],
                     ),
                     TextFormField(
@@ -153,14 +167,14 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               .subtract(const Duration(days: 10950)),
                           firstDate: DateTime.now()
                               .subtract(const Duration(days: 36500)),
-                          lastDate:
-                              DateTime.now().subtract(const Duration(days: 5840)),
+                          lastDate: DateTime.now()
+                              .subtract(const Duration(days: 5840)),
                         );
 
                         if (pickedDate != null) {
                           print(pickedDate);
                           final formattedDate =
-                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                          DateFormat('yyyy-MM-dd').format(pickedDate);
                           print(formattedDate);
                           setState(() {
                             dateInput.text = formattedDate;
@@ -174,10 +188,17 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                       builder: (BuildContext context,
                           AsyncSnapshot<List<LocalUnitResponseDTO>> snapshot) {
                         if (snapshot.hasError) {
-                          return const Text('Unable to load local units');
+                          return const Text(
+                              'Impossible de charger les unités locales');
                         }
                         if (snapshot.hasData) {
                           return DropdownButtonFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Veuillez sélectionner une unité locale';
+                              }
+                              return null;
+                            },
                             decoration: const InputDecoration(
                               icon: Icon(Icons.home),
                               labelText: 'Unité locale',
@@ -185,11 +206,17 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                             items: snapshot.data!
                                 .map((LocalUnitResponseDTO localUnit) {
                               return DropdownMenuItem(
-                                value: localUnit.code,
-                                child: Text(localUnit.name),
+                                value:
+                                utf8.decode(localUnit.code.runes.toList()),
+                                child: Text(
+                                    utf8.decode(localUnit.name.runes.toList())),
                               );
                             }).toList(),
-                            onChanged: print,
+                            onChanged: (String? value) {
+                              setState(() {
+                                print('value: $value');
+                              });
+                            },
                             focusNode: _focusNodes[7],
                           );
                         } else {
@@ -209,44 +236,73 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(15),
                       ],
+                      controller: socialWorkerNumberController,
                       validator: FieldValidators.socialWorkerNumberValidator,
                       focusNode: _focusNodes[8],
                     ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final familyMember = await openDialogFamily();
-                        if (familyMember != null) {
-                          setState(() {
-                            familyMembers.add(familyMember);
-                          });
-                        }
-                      },
-                      child: const Text('Ajouter un membre de la famille'),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            final familyMember = await openDialogFamily();
+                            if (familyMember != null) {
+                              setState(() {
+                                familyMembers.add(familyMember);
+                              });
+                            }
+                          },
+                          child: const Text('Ajouter un membre de famille'),
+                        ),
+                        const SizedBox(width: 10),
+                        //see family members button
+                        ElevatedButton(
+                          onPressed: () async {
+                            await openDialogFamilyMembers();
+                            setState(() {});
+                          },
+                          child: Text('Famille (${familyMembers.length})'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: familyMembers.length,
+              ElevatedButton(
+                onPressed: () {
+                  if (_registerKey.currentState!.validate()) {
+                    print('first name: ${firstNameController.text}');
+                    print('last name: ${lastNameController.text}');
+                    print('email: ${emailController.text}');
+                    print('password: ${passwordController.text}');
+                    print('phone number: ${phoneNumberController.text}');
+                    print('birth date: ${dateInput.text}');
+                    print('local unit: $localUnitCode');
+                    print(
+                        'social worker number: ${socialWorkerNumberController
+                            .text}');
+                    print('family members: $familyMembers');
 
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('${familyMembers[index].firstName} ${familyMembers[index].lastName}'),
-                    subtitle: Text(
-                      DateFormat('yyyy-MM-dd')
-                          .format(familyMembers[index].birthDate),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        setState(() {
-                          familyMembers.remove(familyMembers[index]);
-                        });
-                      },
-                    ),
-                  );
+                    //to BeneficiaryCreationRequest
+
+                    final beneficiaryCreationRequest =
+                    BeneficiaryCreationRequest(
+                      firstName: firstNameController.text,
+                      lastName: lastNameController.text,
+                      username: emailController.text,
+                      password: passwordController.text,
+                      phoneNumber: phoneNumberController.text,
+                      birthDate: dateInput.text,
+                      localUnitCode: localUnitCode,
+                      socialWorkerNumber: socialWorkerNumberController.text,
+                      familyMembers: familyMembers,
+                    );
+
+                    print(beneficiaryCreationRequest.toJson());
+                  }
                 },
+                child: const Text('S\'inscrire'),
               ),
             ],
           ),
@@ -258,81 +314,133 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   Future<FamilyMemberCreationRequest?> openDialogFamily() =>
       showDialog<FamilyMemberCreationRequest>(
         context: context,
+        builder: (context) =>
+            AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: const Text('Ajouter un membre de la famille'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Prénom',
+                      icon: Icon(Icons.account_circle),
+                      fillColor: Colors.white,
+                    ),
+                    keyboardType: TextInputType.name,
+                    textInputAction: TextInputAction.next,
+                    validator: FieldValidators.nameValidator,
+                    controller: alertFirstName,
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Nom',
+                      icon: Icon(Icons.account_circle),
+                      fillColor: Colors.white,
+                    ),
+                    keyboardType: TextInputType.name,
+                    textInputAction: TextInputAction.next,
+                    validator: FieldValidators.nameValidator,
+                    controller: alertLastName,
+                  ),
+                  TextFormField(
+                    controller: alertBirthDate,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_today),
+                      labelText: 'Enter Date',
+                    ),
+                    readOnly: true,
+                    onTap: () async {
+                      final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate:
+                        DateTime.now().subtract(const Duration(days: 10950)),
+                        firstDate:
+                        DateTime.now().subtract(const Duration(days: 36500)),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null) {
+                        final formattedDate =
+                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                        setState(() {
+                          alertBirthDate.text = formattedDate;
+                        });
+                      } else {}
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: submit,
+                  child: const Text('Add'),
+                ),
+              ],
+            ),
+      );
+
+  Future<void> openDialogFamilyMembers() {
+      return showDialog(
+        context: context,
         builder: (context) => AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text('Add a family member'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Prénom',
-                  icon: Icon(Icons.account_circle),
-                  fillColor: Colors.white,
+          title: const Text('Membres de la famille'),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return Scaffold(
+                body: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: familyMembers.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(
+                              '${familyMembers[index]
+                                  .firstName} ${familyMembers[index]
+                                  .lastName}'),
+                          subtitle: Text(
+                            familyMembers[index].birthDate,
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                familyMembers.remove(familyMembers[index]);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-                keyboardType: TextInputType.name,
-                textInputAction: TextInputAction.next,
-                validator: FieldValidators.usernameValidator,
-              ),
-              //last name
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Nom',
-                  icon: Icon(Icons.account_circle),
-                  fillColor: Colors.white,
-                ),
-                keyboardType: TextInputType.name,
-                textInputAction: TextInputAction.next,
-                validator: FieldValidators.usernameValidator,
-              ),
-              //birth date],
-              TextFormField(
-                controller: dateInput,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.calendar_today),
-                  labelText: 'Enter Date',
-                ),
-                readOnly: true,
-                onTap: () async {
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate:
-                        DateTime.now().subtract(const Duration(days: 10950)),
-                    firstDate:
-                        DateTime.now().subtract(const Duration(days: 36500)),
-                    lastDate: DateTime.now(),
-                  );
-
-                  if (pickedDate != null) {
-                    print(pickedDate);
-                    final formattedDate =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
-                    print(formattedDate);
-                    setState(() {
-                      dateInput.text = formattedDate;
-                    });
-                  } else {}
-                },
-              ),
-            ],
+              );
+            },
           ),
           actions: [
             TextButton(
-              onPressed: submit,
-              child: const Text('Add'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Ok'),
             ),
           ],
         ),
       );
+    }
 
   void submit() {
     Navigator.of(context).pop(
       FamilyMemberCreationRequest(
-        firstName: 'firstName',
-        lastName: 'lastName',
-        birthDate: DateTime.now(),
+        firstName: alertFirstName.text,
+        lastName: alertLastName.text,
+        birthDate: alertBirthDate.text,
       ),
     );
   }

@@ -23,7 +23,7 @@ class BeneficiaryCreationRequest extends Encodable {
   String lastName;
   String phoneNumber;
   String localUnitCode;
-  DateTime birthDate;
+  String birthDate;
   String socialWorkerNumber;
   List<FamilyMemberCreationRequest> familyMembers;
 
