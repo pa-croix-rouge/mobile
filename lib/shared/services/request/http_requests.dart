@@ -4,8 +4,6 @@ import 'package:pa_mobile/shared/services/environement/environment.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
 class HttpRequests {
-  static final Client _client = http.Client();
-
   static Future<Map<String, String>> _defaultHeaders(
     Map<String, String>? headers,
   ) async {
@@ -23,6 +21,7 @@ class HttpRequests {
   static Future<Response> post(String route, Object body,
       [Map<String, String>? headers]) async {
     print(Uri.parse(Environment.apiURL + route));
+    print(body);
     final url = Uri.parse(Environment.apiURL + route);
     return http.Client().post(
       url,

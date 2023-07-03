@@ -14,7 +14,7 @@ class Register {
     switch (response.statusCode) {
       case 200:
         final list = <LocalUnitResponseDTO>[];
-        for (final element in jsonDecode(utf8.decode(response.body.runes.toList())) as List<dynamic>) {
+        for (final element in jsonDecode(response.body) as List<dynamic>) {
           list.add(LocalUnitResponseDTO.decode(element as Map<String, dynamic>));
         }
         return list;

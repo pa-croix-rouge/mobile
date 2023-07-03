@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +20,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   List<FamilyMemberCreationRequest> familyMembers = [];
 
   final _registerKey = GlobalKey<FormState>();
+  final _formKeyFamily = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -51,6 +50,11 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
     super.initState();
     dateInput.text = DateFormat('yyyy-MM-dd').format(
       DateTime.now().subtract(const Duration(days: 10950)),
+    );
+    alertBirthDate = TextEditingController(
+      text: DateFormat('yyyy-MM-dd').format(
+        DateTime.now().subtract(const Duration(days: 10950)),
+      ),
     );
   }
 
@@ -150,6 +154,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(10),
                       ],
+                      controller: phoneNumberController,
                       validator: FieldValidators.phoneNumberValidator,
                       focusNode: _focusNodes[5],
                     ),
@@ -206,15 +211,13 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                             items: snapshot.data!
                                 .map((LocalUnitResponseDTO localUnit) {
                               return DropdownMenuItem(
-                                value:
-                                    utf8.decode(localUnit.code.runes.toList()),
-                                child: Text(
-                                    utf8.decode(localUnit.name.runes.toList())),
+                                value: localUnit.code,
+                                child: Text(localUnit.name),
                               );
                             }).toList(),
                             onChanged: (String? value) {
                               setState(() {
-                                print('value: $value');
+                                localUnitCode = value!;
                               });
                             },
                             focusNode: _focusNodes[7],
@@ -288,57 +291,60 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           title: const Text('Ajouter un membre de la famille'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Prénom',
-                  icon: Icon(Icons.account_circle),
-                  fillColor: Colors.white,
+          content: Form(
+            key: _formKeyFamily,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Prénom',
+                    icon: Icon(Icons.account_circle),
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  validator: FieldValidators.nameValidator,
+                  controller: alertFirstName,
                 ),
-                keyboardType: TextInputType.name,
-                textInputAction: TextInputAction.next,
-                validator: FieldValidators.nameValidator,
-                controller: alertFirstName,
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Nom',
-                  icon: Icon(Icons.account_circle),
-                  fillColor: Colors.white,
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Nom',
+                    icon: Icon(Icons.account_circle),
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  validator: FieldValidators.nameValidator,
+                  controller: alertLastName,
                 ),
-                keyboardType: TextInputType.name,
-                textInputAction: TextInputAction.next,
-                validator: FieldValidators.nameValidator,
-                controller: alertLastName,
-              ),
-              TextFormField(
-                controller: alertBirthDate,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.calendar_today),
-                  labelText: 'Enter Date',
+                TextFormField(
+                  controller: alertBirthDate,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_today),
+                    labelText: 'Enter Date',
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate:
+                          DateTime.now().subtract(const Duration(days: 10950)),
+                      firstDate:
+                          DateTime.now().subtract(const Duration(days: 36500)),
+                      lastDate: DateTime.now(),
+                    );
+                    if (pickedDate != null) {
+                      final formattedDate =
+                          DateFormat('yyyy-MM-dd').format(pickedDate);
+                      setState(() {
+                        alertBirthDate.text = formattedDate;
+                      });
+                    } else {}
+                  },
                 ),
-                readOnly: true,
-                onTap: () async {
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate:
-                        DateTime.now().subtract(const Duration(days: 10950)),
-                    firstDate:
-                        DateTime.now().subtract(const Duration(days: 36500)),
-                    lastDate: DateTime.now(),
-                  );
-                  if (pickedDate != null) {
-                    final formattedDate =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
-                    setState(() {
-                      alertBirthDate.text = formattedDate;
-                    });
-                  } else {}
-                },
-              ),
-            ],
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -420,12 +426,15 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   }
 
   void submit() {
-    Navigator.of(context).pop(
-      FamilyMemberCreationRequest(
-        firstName: alertFirstName.text,
-        lastName: alertLastName.text,
-        birthDate: alertBirthDate.text,
-      ),
-    );
+    if (_formKeyFamily.currentState!.validate()) {
+      _formKeyFamily.currentState!.save();
+      Navigator.of(context).pop(
+        FamilyMemberCreationRequest(
+          firstName: alertFirstName.text,
+          lastName: alertLastName.text,
+          birthDate: alertBirthDate.text,
+        ),
+      );
+    }
   }
 }

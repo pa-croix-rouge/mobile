@@ -17,7 +17,7 @@ class FamilyMemberCreationRequest extends Encodable {
     return {
       'firstName': firstName,
       'lastName': lastName,
-      'birthDate': birthDate,
+      'birthDate': '${birthDate}T00:00:00.000Z',
     };
   }
 

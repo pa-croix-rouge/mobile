@@ -35,9 +35,9 @@ class BeneficiaryCreationRequest extends Encodable {
       'lastName': lastName,
       'phoneNumber': phoneNumber,
       'localUnitCode': localUnitCode,
-      'birthDate': birthDate,
+      'birthDate': '${birthDate}T00:00:00.000Z',
       'socialWorkerNumber': socialWorkerNumber,
-      'familyMembers': jsonEncode(familyMembers),
+      'familyMembers': familyMembers.map((e) => e.toJson()).toList(),
     };
   }
 

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/event/EventRegistrationDTO.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
-import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/event/logic/event.dart';
 
 class EventDetailScreen extends StatefulWidget {
@@ -75,7 +74,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Evenement'),
         leading: IconButton(
@@ -133,17 +132,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                               .format(widget.event.timeWindows[index].end)),
                         ],
                       ),
-                      OutlinedButton(
-                        onPressed: isFull(index) && !isJoined(index)
-                            ? null
-                            : () => isJoined(index)
-                                ? onLeave(index)
-                                : onJoin(index),
-                        child: widget.event.timeWindows[index].participants
-                                .contains(widget.beneficiary.id)
-                            ? const Text("Se désinscrire")
-                            : const Text("S'inscrire"),
-                      )
+                      if (!widget.event.timeWindows[index].end
+                          .isBefore(DateTime.now()))
+                        OutlinedButton(
+                          onPressed: isFull(index) && !isJoined(index)
+                              ? null
+                              : () => isJoined(index)
+                                  ? onLeave(index)
+                                  : onJoin(index),
+                          child: widget.event.timeWindows[index].participants
+                                  .contains(widget.beneficiary.id)
+                              ? const Text("Se désinscrire")
+                              : const Text("S'inscrire"),
+                        )
                     ],
                   ),
                 );

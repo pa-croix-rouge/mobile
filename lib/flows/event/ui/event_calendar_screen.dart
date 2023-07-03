@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/event/EventResponseDTO.dart';
-import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/event/logic/event.dart';
 import 'package:pa_mobile/flows/event/ui/event_detail_screen.dart';
@@ -84,10 +83,11 @@ class _EventScreenState extends State<EventScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         localUnitEvents = snapshot.data!;
+        selectedEvent.value = _getEventsForDay(_selectedDay);
         return Column(
           children: [
             TableCalendar<EventResponseDTO>(
-              firstDay: DateTime.utc(1999, 1, 1),
+              firstDay: DateTime.utc(1999),
               lastDay: DateTime.utc(2030, 3, 14),
               focusedDay: _selectedDay,
               locale: 'fr_FR',
