@@ -5,7 +5,7 @@ import 'package:pa_mobile/core/model/local_unit/local_unit_response_dto.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/shared/services/request/http_requests.dart';
 
-class Home {
+class Account {
   static String get beneficiaryInfoRoute => '/beneficiaries/token';
 
   static Future<BeneficiaryResponseDto> getBeneficiaryInfo() async {

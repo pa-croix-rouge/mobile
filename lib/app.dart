@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
-import 'package:pa_mobile/flows/inscription/ui/inscription_screen.dart';
-import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
-import 'package:pa_mobile/flows/home/ui/modify_profile_screen.dart';
+import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
+import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
+import 'package:pa_mobile/flows/account/ui/account_screen.dart';
+import 'package:pa_mobile/flows/account/ui/modify_profile_screen.dart';
+import 'package:pa_mobile/flows/inscription/ui/register_success_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
 
 import 'flows/event/ui/event_calendar_screen.dart';
@@ -36,14 +38,17 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute:
-          widget.isLogged ? HomeScreen.routeName : LoginScreen.routeName,
+          widget.isLogged ? AccountScreen.routeName : HomeScreen.routeName,
       routes: {
-        HomeScreen.routeName: (context) => const HomeScreen(),
+        AccountScreen.routeName: (context) => const AccountScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
         EventScreen.routeName: (context) => const EventScreen(),
         AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
-        InscriptionScreen.routeName: (context) => const InscriptionScreen(),
+        RegisterScreen.routeName: (context) => const RegisterScreen(),
         ModifyProfileScreen.routeName: (context) => const ModifyProfileScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
+        RegisterSuccessScreen.routeName: (context) =>
+            const RegisterSuccessScreen(),
       },
     );
   }

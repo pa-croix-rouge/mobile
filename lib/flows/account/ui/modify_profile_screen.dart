@@ -45,7 +45,7 @@ class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
                     TextFormField(
                       initialValue: beneficiary.firstName,
                       decoration: const InputDecoration(
-                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        border: OutlineInputBorder(),
                         labelText: 'Prénom',
                       ),
                     ),
@@ -79,8 +79,8 @@ class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
                               .subtract(const Duration(days: 10950)),
                           firstDate: DateTime.now()
                               .subtract(const Duration(days: 36500)),
-                          lastDate:
-                              DateTime.now().subtract(const Duration(days: 5840)),
+                          lastDate: DateTime.now()
+                              .subtract(const Duration(days: 5840)),
                         );
 
                         if (pickedDate != null) {
@@ -100,7 +100,7 @@ class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Text('Error');
+          return const Text('Error');
         } else {
           return const Center(child: CircularProgressIndicator());
         }

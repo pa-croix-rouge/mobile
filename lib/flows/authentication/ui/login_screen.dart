@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
 import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
-import 'package:pa_mobile/flows/inscription/ui/inscription_screen.dart';
+import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
 import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
-import 'package:pa_mobile/flows/home/ui/home_screen.dart';
+import 'package:pa_mobile/flows/account/ui/account_screen.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
@@ -36,33 +36,30 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Row(
-          children: [
-            Spacer(),
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.black,
-              child: CircleAvatar(
-                radius: 23,
-                backgroundImage: NetworkImage(
-                    'https://www.larousse.fr/encyclopedie/data/images/1009656-Drapeau_de_la_Croix-Rouge.jpg'),
-              ),
-            ),
-            Spacer()
-          ],
+        title: const Text(
+          'Connexion',
+          style: TextStyle(
+            color: Colors.black,
+          ),
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const Spacer(),
-            Form(
-              key: _loginKey,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Theme(
-                  data: Theme.of(context)
-                      .copyWith(primaryColor: Colors.redAccent,),
+        child: Theme(
+          data: ThemeData(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: Colors.green,
+                  background: Colors.red,
+                  secondary: Colors.green,
+                  tertiary: Colors.green,
+                ),
+          ),
+          child: Column(
+            children: [
+              const Spacer(),
+              Form(
+                key: _loginKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -107,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Rester connecté',
                             isChecked: value,
                             onChanged: onCheckBoxChange,
+
                           );
                         },
                       ),
@@ -124,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               Navigator.pushNamed(
                                 context,
-                                InscriptionScreen.routeName,
+                                RegisterScreen.routeName,
                               );
                             },
                             child: const Text("S'inscrire"),
@@ -135,9 +133,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-            ),
-            const Spacer(),
-          ],
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );
@@ -165,8 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
           } else {
             await StayLoginSecureStorage().notStayLogin();
           }
-          await Navigator.of(context)
-              .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => false);
+          await Navigator.of(context).pushNamedAndRemoveUntil(
+              AccountScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
