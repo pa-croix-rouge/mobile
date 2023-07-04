@@ -19,8 +19,11 @@ class InscriptionScreen extends StatefulWidget {
 class _InscriptionScreenState extends State<InscriptionScreen> {
   List<FamilyMemberCreationRequest> familyMembers = [];
 
-  final _registerKey = GlobalKey<FormState>();
   final _formKeyFamily = GlobalKey<FormState>();
+  final _accountCreationFormKey = GlobalKey<FormState>();
+  final _personalInformationFormKey = GlobalKey<FormState>();
+  final _localUnitInformationFormKey = GlobalKey<FormState>();
+  final _familyInformationFormKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -72,42 +75,63 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
           body: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Form(
-                key: _registerKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Stepper(
-                    //horizontal
-                    currentStep: _index,
-                    onStepCancel: () {
-                      if (_index > 0) {
-                        setState(() {
-                          _index -= 1;
-                        });
-                      }
-                    },
-                    onStepContinue: () {
-                      if (_index <= 0) {
-                        setState(() {
-                          _index += 1;
-                        });
-                      }
-                    },
-                    onStepTapped: (int index) {
-                      setState(() {
-                        _index = index;
-                      });
-                    },
-                    steps: <Step>[
-                      Step(
-                        title: const Text('1'),
-                        content: Column(
-                          children: [
-                            TextFormField(
+              Stepper(
+                //horizontal
+                currentStep: _index,
+                controlsBuilder: (context, detail) => Wrap(
+                  children: <Widget>[
+                    if (!(_index == 0))
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: TextButton(
+                          onPressed: onStepCancel,
+                          child: const Text('Précédent'),
+                        ),
+                      ),
+                    if (!(_index == 3))
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: TextButton(
+                          onPressed: onStepContinue,
+                          child: const Text('Suivant'),
+                        ),
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: TextButton(
+                          onPressed: onRegister,
+                          child: const Text("S'inscrire"),
+                        ),
+                      ),
+                  ],
+                ),
+                onStepTapped: (int index) {
+                  if (index < _index) {
+                    setState(() {
+                      _index = index;
+                    });
+                  } else if (index == _index) {
+                  } else {
+                    onStepContinue();
+                  }
+                },
+                steps: <Step>[
+                  Step(
+                    title: const Text('Création du Compte'),
+                    content: Form(
+                      key: _accountCreationFormKey,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Email',
                                 icon: Icon(Icons.account_circle),
-                                fillColor: Colors.grey,
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
+                                border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.name,
                               textInputAction: TextInputAction.next,
@@ -115,12 +139,16 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               validator: FieldValidators.emailValidator,
                               focusNode: _focusNodes[0],
                             ),
-                            TextFormField(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
+                                fillColor: Color(0xfff3f3f4),
                                 filled: true,
                                 labelText: 'Mot de passe',
+                                border: OutlineInputBorder(),
                                 icon: Icon(Icons.lock),
-                                fillColor: Colors.black,
                               ),
                               keyboardType: TextInputType.visiblePassword,
                               textInputAction: TextInputAction.next,
@@ -128,11 +156,16 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               validator: FieldValidators.passwordValidator,
                               focusNode: _focusNodes[1],
                             ),
-                            TextFormField(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Confirmer le mot de passe',
                                 icon: Icon(Icons.lock),
-                                fillColor: Colors.white,
+                                border: OutlineInputBorder(),
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
                               ),
                               keyboardType: TextInputType.visiblePassword,
                               textInputAction: TextInputAction.next,
@@ -145,29 +178,43 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               },
                               focusNode: _focusNodes[2],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Step(
-                        title: const Text('2'),
-                        content: Column(
-                          children: [
-                            TextFormField(
+                    ),
+                  ),
+                  Step(
+                    title: const Text('Informations Personnelles'),
+                    content: Form(
+                      key: _personalInformationFormKey,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Prénom',
                                 icon: Icon(Icons.account_circle),
-                                fillColor: Colors.white,
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
+                                border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.name,
                               controller: firstNameController,
                               textInputAction: TextInputAction.next,
                               validator: FieldValidators.nameValidator,
                               focusNode: _focusNodes[3],
-                            ),TextFormField(
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Nom',
                                 icon: Icon(Icons.account_circle),
-                                fillColor: Colors.white,
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
+                                border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.name,
                               textInputAction: TextInputAction.next,
@@ -175,11 +222,16 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               validator: FieldValidators.nameValidator,
                               focusNode: _focusNodes[4],
                             ),
-                            TextFormField(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Numéro de téléphone',
                                 icon: Icon(Icons.phone),
-                                fillColor: Colors.white,
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
+                                border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.phone,
                               textInputAction: TextInputAction.next,
@@ -191,11 +243,17 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               validator: FieldValidators.phoneNumberValidator,
                               focusNode: _focusNodes[5],
                             ),
-                            TextFormField(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               controller: dateInput,
                               decoration: const InputDecoration(
                                 icon: Icon(Icons.calendar_today),
                                 labelText: 'Enter Date',
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
+                                border: OutlineInputBorder(),
                               ),
                               readOnly: true,
                               onTap: () async {
@@ -211,8 +269,8 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
 
                                 if (pickedDate != null) {
                                   print(pickedDate);
-                                  final formattedDate =
-                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                                  final formattedDate = DateFormat('yyyy-MM-dd')
+                                      .format(pickedDate);
                                   print(formattedDate);
                                   setState(() {
                                     dateInput.text = formattedDate;
@@ -221,24 +279,30 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                               },
                               focusNode: _focusNodes[6],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Step(
-                        title: const Text('3'),
-                        content: Column(
-                          children: [
-                            FutureBuilder(
-                              future: Register.loadLocalUnit(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<List<LocalUnitResponseDTO>>
-                                      snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Text(
-                                      'Impossible de charger les unités locales');
-                                }
-                                if (snapshot.hasData) {
-                                  return DropdownButtonFormField(
+                    ),
+                  ),
+                  Step(
+                    title: const Text('Informations Unité Locale'),
+                    content: Form(
+                      key: _localUnitInformationFormKey,
+                      child: Column(
+                        children: [
+                          FutureBuilder(
+                            future: Register.loadLocalUnit(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<List<LocalUnitResponseDTO>>
+                                    snapshot) {
+                              if (snapshot.hasError) {
+                                return const Text(
+                                    'Impossible de charger les unités locales');
+                              }
+                              if (snapshot.hasData) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: DropdownButtonFormField(
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Veuillez sélectionner une unité locale';
@@ -248,6 +312,9 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                                     decoration: const InputDecoration(
                                       icon: Icon(Icons.home),
                                       labelText: 'Unité locale',
+                                      fillColor: Color(0xfff3f3f4),
+                                      filled: true,
+                                      border: OutlineInputBorder(),
                                     ),
                                     items: snapshot.data!
                                         .map((LocalUnitResponseDTO localUnit) {
@@ -262,17 +329,22 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                                       });
                                     },
                                     focusNode: _focusNodes[7],
-                                  );
-                                } else {
-                                  return const CircularProgressIndicator();
-                                }
-                              },
-                            ),
-                            TextFormField(
+                                  ),
+                                );
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TextFormField(
                               decoration: const InputDecoration(
                                 hintText: 'Numéro de travailleur social',
                                 icon: Icon(Icons.work),
-                                fillColor: Colors.white,
+                                fillColor: Color(0xfff3f3f4),
+                                filled: true,
+                                border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.next,
@@ -281,52 +353,104 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                                 LengthLimitingTextInputFormatter(15),
                               ],
                               controller: socialWorkerNumberController,
-                              validator: FieldValidators.socialWorkerNumberValidator,
+                              validator:
+                                  FieldValidators.socialWorkerNumberValidator,
                               focusNode: _focusNodes[8],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Step(
-                        title: const Text('4'),
-                        content: Wrap(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                final familyMember = await openDialogFamily();
-                                if (familyMember != null) {
-                                  setState(() {
-                                    familyMembers.add(familyMember);
-                                  });
-                                }
-                              },
-                              child: const Text('Ajouter un membre de famille'),
-                            ),
-                            const SizedBox(width: 10),
-                            //see family members button
-                            ElevatedButton(
-                              onPressed: () async {
-                                await openDialogFamilyMembers();
-                                setState(() {});
-                              },
-                              child: Text('Famille (${familyMembers.length})'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: onRegister,
-                child: const Text("S'inscrire"),
+                  Step(
+                    title: const Text('Informations Familiales'),
+                    content: Form(
+                      key: _familyInformationFormKey,
+                      child: Wrap(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              final familyMember = await openDialogFamily();
+                              if (familyMember != null) {
+                                setState(() {
+                                  familyMembers.add(familyMember);
+                                });
+                              }
+                            },
+                            child: const Text('Ajouter un membre de famille'),
+                          ),
+                          const SizedBox(width: 10),
+                          //see family members button
+                          ElevatedButton(
+                            onPressed: () async {
+                              await openDialogFamilyMembers();
+                              setState(() {});
+                            },
+                            child: Text('Famille (${familyMembers.length})'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void onStepContinue() {
+    switch (_index) {
+      case 0:
+        if (_accountCreationFormKey.currentState!.validate()) {
+          if (_index <= 2) {
+            setState(() {
+              _index += 1;
+            });
+          }
+        }
+        break;
+      case 1:
+        if (_personalInformationFormKey.currentState!.validate()) {
+          if (_index <= 2) {
+            setState(() {
+              _index += 1;
+            });
+          }
+        }
+        break;
+      case 2:
+        if (_familyInformationFormKey.currentState!.validate()) {
+          if (_index <= 2) {
+            setState(() {
+              _index += 1;
+            });
+          }
+        }
+        break;
+      case 3:
+        if (_familyInformationFormKey.currentState!.validate()) {
+          if (_index <= 2) {
+            setState(() {
+              _index += 1;
+            });
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  void onStepCancel() {
+    if (_index > 0) {
+      setState(() {
+        _index -= 1;
+      });
+    }
+    setState(() {});
   }
 
   Future<FamilyMemberCreationRequest?> openDialogFamily() =>
@@ -454,7 +578,9 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   }
 
   Future<bool> onRegister() async {
-    if (_registerKey.currentState!.validate()) {
+    if (_accountCreationFormKey.currentState!.validate() &&
+        _personalInformationFormKey.currentState!.validate() &&
+        _familyInformationFormKey.currentState!.validate()) {
       final beneficiaryCreationRequest = BeneficiaryCreationRequest(
         firstName: firstNameController.text,
         lastName: lastNameController.text,
