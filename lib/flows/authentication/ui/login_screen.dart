@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
-import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
+import 'package:pa_mobile/flows/account/ui/account_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
 import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
-import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
-import 'package:pa_mobile/flows/account/ui/account_screen.dart';
-import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
 import 'package:pa_mobile/shared/widget/cr_checkbox.dart';
+import 'package:pa_mobile/shared/widget/xbutton.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -104,28 +102,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Rester connecté',
                             isChecked: value,
                             onChanged: onCheckBoxChange,
-
                           );
                         },
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextButton(
+                          XButton(
                             onPressed: onLoginPressed,
                             child: const Text('Se connecter'),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.all(10),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                RegisterScreen.routeName,
-                              );
-                            },
-                            child: const Text("S'inscrire"),
                           ),
                         ],
                       ),

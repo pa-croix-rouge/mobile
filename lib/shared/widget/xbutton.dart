@@ -30,7 +30,8 @@ class XButton extends StatelessWidget {
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius)),
+            borderRadius: BorderRadius.circular(borderRadius)
+        ),
       ),
       child: child,
     );

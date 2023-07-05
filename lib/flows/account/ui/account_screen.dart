@@ -3,11 +3,14 @@ import 'package:pa_mobile/core/model/address/address_dto.dart';
 import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/local_unit/local_unit_response_dto.dart';
 import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
+import 'package:pa_mobile/flows/account/ui/modify_profile_screen.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
 import 'package:pa_mobile/flows/account/logic/account.dart';
+import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
+import 'package:pa_mobile/shared/widget/disable_focus_node.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -50,7 +53,7 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     Account.getBeneficiaryInfo();
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           title,
@@ -89,133 +92,191 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Widget getProfile() {
-    return Column(
-      children: [
-        FutureBuilder(
-          future: getBeneficiary(),
-          builder: (context, AsyncSnapshot<BeneficiaryResponseDto> snapshot) {
-            if (snapshot.hasError) {
-              JwtSecureStorage().deleteJwtToken();
-              StayLoginSecureStorage().notStayLogin();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                LoginScreen.routeName,
-                (route) => false,
-              );
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            beneficiary = snapshot.data!;
-            return Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.account_tree),
-                          const SizedBox(width: 10),
-                          Text(
-                            beneficiary.username,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.person),
-                          const SizedBox(width: 10),
-                          Text(
-                            '${beneficiary.firstName} ${beneficiary.lastName}',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone),
-                          const SizedBox(width: 10),
-                          Text(
-                            beneficiary.phoneNumber,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.home),
-                          const SizedBox(width: 10),
-                          Text(
-                            beneficiary.birthDate,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.home),
-                          const SizedBox(width: 10),
-                          Text(
-                            localUnit.name,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.home),
-                          const SizedBox(width: 10),
-                          Text(
-                            localUnit.address.city,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                //modify profile button
-              ],
-            );
-          },
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/modify_profile');
-          },
-          child: Text(
-            'Modifier le profile',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
+    return SingleChildScrollView(
+      child: FutureBuilder(
+        future: getBeneficiary(),
+        builder: (context, AsyncSnapshot<BeneficiaryResponseDto> snapshot) {
+          if (snapshot.hasError) {
             JwtSecureStorage().deleteJwtToken();
             StayLoginSecureStorage().notStayLogin();
             Navigator.pushNamedAndRemoveUntil(
               context,
-              LoginScreen.routeName,
-                  (route) => false,
+              HomeScreen.routeName,
+              (route) => false,
             );
-          },
-          child: Text(
-            'Se deconnecter',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
-      ],
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          beneficiary = snapshot.data!;
+          return Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Icon(Icons.account_circle, size: 80),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Bonjour',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            '${beneficiary.firstName} ${beneficiary.lastName}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    RawMaterialButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          ModifyProfileScreen.routeName,
+                          arguments: beneficiary,
+                        );
+                      },
+                      fillColor: Theme.of(context).colorScheme.secondary,
+                      padding: const EdgeInsets.all(10),
+                      shape: const CircleBorder(),
+                      child: const Icon(
+                        Icons.edit,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    RawMaterialButton(
+                      onPressed: () {
+                        JwtSecureStorage().deleteJwtToken();
+                        StayLoginSecureStorage().notStayLogin();
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          HomeScreen.routeName,
+                          (route) => false,
+                        );
+                      },
+                      shape: const CircleBorder(),
+                      fillColor: Theme.of(context).colorScheme.secondary,
+                      padding: const EdgeInsets.all(10.0),
+                      child: const Icon(
+                        Icons.logout,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.email),
+                        labelText: 'Email',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: beneficiary.username,
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.person),
+                        labelText: 'Nom',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: '${beneficiary.lastName} ${beneficiary.firstName}',
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.phone),
+                        labelText: 'Numéro de téléphone',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: beneficiary.phoneNumber,
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.calendar_today),
+                        labelText: 'Date de naissance',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: beneficiary.birthDate,
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                child: Divider(
+                  color: Theme.of(context).colorScheme.secondary,
+                  thickness: 1,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.account_balance_outlined),
+                        labelText: 'Unité locale',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: localUnit.name,
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.location_on),
+                        labelText: 'Adresse',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text:
+                            '${localUnit.address.city}, ${localUnit.address.streetNumberAndName}',
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
