@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusNode(),
   ];
   ValueNotifier<bool> keepMeSignedCheckBox = ValueNotifier(false);
+  bool _seePassword = false;
 
   final _loginKey = GlobalKey<FormState>();
 
@@ -79,31 +80,33 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8),
                         child: TextFormField(
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Mot de passe',
-                            icon: Icon(Icons.lock),
-                            border: OutlineInputBorder(),
-                            fillColor: Color(0xfff3f3f4),
+                            icon: const Icon(Icons.lock),
+                            border: const OutlineInputBorder(),
+                            fillColor: const Color(0xfff3f3f4),
                             filled: true,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _seePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _seePassword = !_seePassword;
+                                });
+                              },
+                            ),
                           ),
-                          obscureText: true,
+                          obscureText: !_seePassword,
                           textInputAction: TextInputAction.done,
                           controller: widget.passwordController,
                           validator: FieldValidators.passwordValidator,
                           focusNode: _focusNodes[1],
                         ),
-                      ),
-                      ValueListenableBuilder<bool>(
-                        valueListenable: keepMeSignedCheckBox,
-                        builder: (context, value, _) {
-                          return CrCheckBox(
-                            text: 'Rester connecté',
-                            isChecked: value,
-                            onChanged: onCheckBoxChange,
-                          );
-                        },
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -143,11 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
             password: widget.passwordController.text,
           ),
         )) {
-          if (keepMeSignedCheckBox.value) {
-            await StayLoginSecureStorage().stayLogin();
-          } else {
-            await StayLoginSecureStorage().notStayLogin();
-          }
+          await StayLoginSecureStorage().stayLogin();
           await Navigator.of(context).pushNamedAndRemoveUntil(
               AccountScreen.routeName, (route) => false);
         } else {

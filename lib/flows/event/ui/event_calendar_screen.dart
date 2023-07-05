@@ -76,7 +76,7 @@ class _EventScreenState extends State<EventScreen> {
           Navigator.pushNamedAndRemoveUntil(
             context,
             LoginScreen.routeName,
-                (route) => false,
+            (route) => false,
           );
         }
         if (!snapshot.hasData) {
@@ -84,66 +84,84 @@ class _EventScreenState extends State<EventScreen> {
         }
         localUnitEvents = snapshot.data!;
         selectedEvent.value = _getEventsForDay(_selectedDay);
-        return Column(
-          children: [
-            TableCalendar<EventResponseDTO>(
-              firstDay: DateTime.utc(1999),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: _selectedDay,
-              locale: 'fr_FR',
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              calendarFormat: _calendarFormat,
-              onDaySelected: _onDaySelected,
-              eventLoader: _getEventsForDay,
-              onFormatChanged: (format) {
-                if (_calendarFormat != format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                }
-              },
-              onPageChanged: (focusedDay) {
-                _selectedDay = focusedDay;
-              },
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.blue,
+              surface: Colors.blueGrey,
+              onSurface: Colors.yellow,
             ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ValueListenableBuilder<List<EventResponseDTO>>(
-                valueListenable: selectedEvent,
-                builder: (context, value, _) {
-                  return ListView.builder(
-                    itemCount: value.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: ListTile(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute<EventDetailScreen>(
-                                builder: (context) => EventDetailScreen(
-                                  event: value[index],
-                                  beneficiary: beneficiary,
-                                ),
-                              )),
-                          title: Text(value[index].name),
-                        ),
-                      );
-                    },
-                  );
+          ),
+          child: Column(
+            children: [
+              TableCalendar<EventResponseDTO>(
+                calendarStyle: const CalendarStyle(
+                  outsideDaysVisible: false,
+                  rangeHighlightColor: Colors.red,
+                ),
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                ),
+                firstDay: DateTime.utc(1999),
+                lastDay: DateTime.utc(2030, 3, 14),
+                focusedDay: _selectedDay,
+                locale: 'fr_FR',
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                calendarFormat: _calendarFormat,
+                onDaySelected: _onDaySelected,
+                eventLoader: _getEventsForDay,
+                onFormatChanged: (format) {
+                  if (_calendarFormat != format) {
+                    setState(() {
+                      _calendarFormat = format;
+                    });
+                  }
+                },
+                onPageChanged: (focusedDay) {
+                  _selectedDay = focusedDay;
                 },
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: ValueListenableBuilder<List<EventResponseDTO>>(
+                  valueListenable: selectedEvent,
+                  builder: (context, value, _) {
+                    return ListView.builder(
+                      itemCount: value.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute<EventDetailScreen>(
+                                  builder: (context) => EventDetailScreen(
+                                    event: value[index],
+                                    beneficiary: beneficiary,
+                                  ),
+                                )),
+                            title: Text(value[index].name),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

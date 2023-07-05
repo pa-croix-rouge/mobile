@@ -20,6 +20,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   List<FamilyMemberCreationRequest> familyMembers = [];
 
+  var _showPassword = false;
+  var _showConfirmPassword = false;
   final _formKeyFamily = GlobalKey<FormState>();
   final _accountCreationFormKey = GlobalKey<FormState>();
   final _personalInformationFormKey = GlobalKey<FormState>();
@@ -82,12 +84,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           resizeToAvoidBottomInset: false,
           body: Theme(
             data: ThemeData(
-                colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: Colors.green,
-                  background: Colors.red,
-                  secondary: Colors.green,
-                  tertiary: Colors.green,
-                ),
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    primary: Colors.green,
+                    background: Colors.red,
+                    secondary: Colors.green,
+                    tertiary: Colors.green,
+                  ),
             ),
             child: Stepper(
               currentStep: _index,
@@ -133,9 +135,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Step(
                   isActive: _index >= 0,
                   title: const Text('Création du Compte'),
-                  state: _index >= 0 && hasTryToSubmit[0] ? (isAccountCreationFormValid()
-                      ? StepState.complete
-                      : StepState.error) : StepState.indexed,
+                  state: _index >= 0 && hasTryToSubmit[0]
+                      ? (isAccountCreationFormValid()
+                          ? StepState.complete
+                          : StepState.error)
+                      : StepState.indexed,
                   content: Form(
                     key: _accountCreationFormKey,
                     child: Column(
@@ -160,12 +164,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Padding(
                           padding: const EdgeInsets.all(4),
                           child: TextFormField(
-                            decoration: const InputDecoration(
-                              fillColor: Color(0xfff3f3f4),
+                            decoration: InputDecoration(
+                              fillColor: const Color(0xfff3f3f4),
                               filled: true,
                               labelText: 'Mot de passe',
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _showPassword = !_showPassword;
+                                  });
+                                },
+                                icon: Icon(
+                                  _showPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                              ),
                             ),
+                            obscureText: !_showPassword,
                             keyboardType: TextInputType.visiblePassword,
                             textInputAction: TextInputAction.next,
                             controller: passwordController,
@@ -176,12 +193,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Padding(
                           padding: const EdgeInsets.all(4),
                           child: TextFormField(
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Confirmer le mot de passe',
-                              border: OutlineInputBorder(),
-                              fillColor: Color(0xfff3f3f4),
+                              border: const OutlineInputBorder(),
+                              fillColor: const Color(0xfff3f3f4),
                               filled: true,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _showConfirmPassword =
+                                        !_showConfirmPassword;
+                                  });
+                                },
+                                icon: Icon(
+                                  _showConfirmPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                              ),
                             ),
+                            obscureText: !_showConfirmPassword,
                             keyboardType: TextInputType.visiblePassword,
                             textInputAction: TextInputAction.next,
                             controller: confirmPasswordController,
@@ -199,9 +230,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 Step(
-                  state: _index >= 1 && hasTryToSubmit[1] ? (isPersonalInformationFormValid()
-                      ? StepState.complete
-                      : StepState.error) : StepState.indexed,
+                  state: _index >= 1 && hasTryToSubmit[1]
+                      ? (isPersonalInformationFormValid()
+                          ? StepState.complete
+                          : StepState.error)
+                      : StepState.indexed,
                   isActive: _index >= 1,
                   title: const Text('Informations Personnelles'),
                   content: Form(
@@ -288,8 +321,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               if (pickedDate != null) {
                                 print(pickedDate);
-                                final formattedDate = DateFormat('yyyy-MM-dd')
-                                    .format(pickedDate);
+                                final formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
                                 print(formattedDate);
                                 setState(() {
                                   dateInput.text = formattedDate;
@@ -304,9 +337,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 Step(
-                  state: _index >= 2 && hasTryToSubmit[2] ? (isLocalUnitInformationFormValid()
-                      ? StepState.complete
-                      : StepState.error) : StepState.indexed,
+                  state: _index >= 2 && hasTryToSubmit[2]
+                      ? (isLocalUnitInformationFormValid()
+                          ? StepState.complete
+                          : StepState.error)
+                      : StepState.indexed,
                   isActive: _index >= 2,
                   title: const Text('Informations Unité Locale'),
                   content: Form(
@@ -387,9 +422,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 Step(
-                  state: _index >= 3 && hasTryToSubmit[3] ? (isFamilyInformationFormValid()
-                      ? StepState.complete
-                      : StepState.error) : StepState.indexed,
+                  state: _index >= 3 && hasTryToSubmit[3]
+                      ? (isFamilyInformationFormValid()
+                          ? StepState.complete
+                          : StepState.error)
+                      : StepState.indexed,
                   isActive: _index >= 3,
                   title: const Text('Informations Familiales'),
                   content: Form(
@@ -429,7 +466,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void onStepContinue() {
-
     switch (_index) {
       case 0:
         hasTryToSubmit[0] = true;
@@ -630,7 +666,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         socialWorkerNumber: socialWorkerNumberController.text,
         familyMembers: familyMembers,
       );
-      final bool = await Register.registerBeneficiary(beneficiaryCreationRequest);
+      final bool =
+          await Register.registerBeneficiary(beneficiaryCreationRequest);
       if (bool) {
         await Navigator.of(context).pushNamed(
           RegisterSuccessScreen.routeName,
