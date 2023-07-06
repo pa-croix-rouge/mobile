@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
 import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
@@ -22,6 +23,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: const AppBarTheme(

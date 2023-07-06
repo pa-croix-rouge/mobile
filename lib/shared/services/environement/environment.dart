@@ -1,3 +1,7 @@
 class Environment {
-  static String get apiURL => const String.fromEnvironment('API_URL', defaultValue: 'http://127.0.0.1:8080');
+  static String get apiURL => const String.fromEnvironment(
+        'API_URL',
+        defaultValue: 'https://api.pa-crx.fr:443',
+        //defaultValue: 'http://localhost:8080',
+      );
 }

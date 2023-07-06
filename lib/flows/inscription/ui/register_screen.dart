@@ -149,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: TextFormField(
                             decoration: const InputDecoration(
                               labelText: 'Email',
-                              hintText: 'email@gmail.com',
+                              hintText: 'email@email.com',
                               fillColor: Color(0xfff3f3f4),
                               filled: true,
                               border: OutlineInputBorder(),

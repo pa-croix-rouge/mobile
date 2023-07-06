@@ -12,6 +12,7 @@ class Authentication {
       route,
       loginDto.encode(),
     );
+    print('Login response: ${response.statusCode}');
     switch (response.statusCode) {
       case 200:
         final loginResponse = LoginResponseDto.decode(response.body);

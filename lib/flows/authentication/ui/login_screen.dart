@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/authentication/login_request_dto.dart';
 import 'package:pa_mobile/flows/account/ui/account_screen.dart';
 import 'package:pa_mobile/flows/authentication/logic/authentication.dart';
-import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
 import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
 import 'package:pa_mobile/shared/validators/field_validators.dart';
-import 'package:pa_mobile/shared/widget/cr_checkbox.dart';
 import 'package:pa_mobile/shared/widget/xbutton.dart';
 
 class LoginScreen extends StatefulWidget {
