@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pa_mobile/flows/account/ui/account_detail_screen.dart';
-import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
+import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
+import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
+import 'package:pa_mobile/flows/account/ui/account_screen.dart';
+import 'package:pa_mobile/flows/account/ui/modify_profile_screen.dart';
+import 'package:pa_mobile/flows/inscription/ui/register_success_screen.dart';
 import 'package:pa_mobile/l10n/l10n.dart';
-import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
 
 import 'flows/event/ui/event_calendar_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.isLogged});
+
   final bool isLogged;
 
   @override
@@ -18,30 +23,38 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    final logged = isLogged();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
+        appBarTheme: const AppBarTheme(
+          elevation: 2,
+          color: Colors.white,
+          foregroundColor: Colors.black,
+        ),
+        primaryColor: const Color(0xFFCB3131),
         colorScheme: ColorScheme.fromSwatch(
-          accentColor: const Color(0xFF13B9FF),
+          accentColor: const Color(0xFFCB3131),
         ),
       ),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute:
-           widget.isLogged ? EventScreen.routeName : LoginScreen.routeName,
+          widget.isLogged ? AccountScreen.routeName : HomeScreen.routeName,
       routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
+        AccountScreen.routeName: (context) => const AccountScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
-        EventScreen.routeName: (context) => EventScreen(),
+        EventScreen.routeName: (context) => const EventScreen(),
         AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
+        RegisterScreen.routeName: (context) => const RegisterScreen(),
+        ModifyProfileScreen.routeName: (context) => const ModifyProfileScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
+        RegisterSuccessScreen.routeName: (context) =>
+            const RegisterSuccessScreen(),
       },
     );
-  }
-
-  Future<bool> isLogged() async {
-    final jwtToken = await JwtSecureStorage().readJwtToken();
-    return jwtToken != null;
   }
 }

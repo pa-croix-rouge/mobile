@@ -18,31 +18,55 @@ class HttpRequests {
     return defaultHeaders;
   }
 
-  static Future<Response> post(
-    String route,
-    Object body,
-    [Map<String, String>? headers]
-  ) async {
-    print( Uri.parse(Environment.apiURL + route));
+  static Future<Response> post(String route, Object body,
+      [Map<String, String>? headers]) async {
+    print(Uri.parse(Environment.apiURL + route));
+    print(body);
     final url = Uri.parse(Environment.apiURL + route);
-    return http.post(url, headers: await _defaultHeaders(headers), body: body);
+    return http.Client().post(
+      url,
+      headers: await _defaultHeaders(headers),
+      body: body,
+    ).timeout(const Duration(seconds: 120));
   }
 
   static Future<Response> delete(
-      String route,
-      Object body,
-      Map<String, String>? headers,
-      ) async {
-    print( Uri.parse(Environment.apiURL + route));
+    String route,
+    Object body,
+    Map<String, String>? headers,
+  ) async {
+    print(Uri.parse(Environment.apiURL + route));
     final url = Uri.parse(Environment.apiURL + route);
-    return http.delete(url, headers: await _defaultHeaders(headers), body: body);
+    return http
+        .delete(
+          url,
+          headers: await _defaultHeaders(headers),
+          body: body,
+        )
+        .timeout(const Duration(seconds: 120));
   }
 
-  static Future<Response> get(
-    String route,
-    [Map<String, String>? headers]
-  ) async {
+  static Future<Response> get(String route,
+      [Map<String, String>? headers]) async {
     final url = Uri.parse(Environment.apiURL + route);
-    return http.get(url, headers: await _defaultHeaders(headers));
+    print(url);
+    return http
+        .get(
+          url,
+          headers: await _defaultHeaders(headers),
+        )
+        .timeout(const Duration(seconds: 120));
+  }
+
+  static Future<Response> put(String route, Object body,
+      [Map<String, String>? headers]) async {
+    final url = Uri.parse(Environment.apiURL + route);
+    return http
+        .put(
+          url,
+          headers: await _defaultHeaders(headers),
+          body: body,
+        )
+        .timeout(const Duration(seconds: 120));
   }
 }

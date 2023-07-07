@@ -3,16 +3,19 @@ import 'dart:convert';
 import 'package:pa_mobile/core/utils/encode.dart';
 
 class EventRegistrationDTO extends Encodable {
-
   EventRegistrationDTO(
-      this.eventId, this.sessionId, this.timeWindowId, this.participantId,);
+    this.eventId,
+    this.sessionId,
+    this.timeWindowId,
+    this.participantId,
+  );
 
   int eventId;
   int sessionId;
   int timeWindowId;
   int participantId;
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'eventId': eventId,
       'sessionId': sessionId,
@@ -23,8 +26,6 @@ class EventRegistrationDTO extends Encodable {
 
   @override
   String encode() {
-    return jsonEncode(toMap());
+    return jsonEncode(toJson());
   }
-
-
 }

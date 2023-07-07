@@ -1,14 +1,21 @@
 name: pa_mobile
 description: Mobile Croix Rouge
-version: 1.0.1+19062023.2
+version: 1.0.3+202308061
 publish_to: none
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
 
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/images/splash.png"
+  android: true
+  ios: true
+
 dependencies:
   table_calendar: ^3.0.9
   bloc: ^8.1.1
+  flutter_native_splash: ^2.3.1
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -31,6 +38,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/images/
 
 flutter_launcher_icons:
   android: "launcher_icon"

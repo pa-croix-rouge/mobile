@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pa_mobile/shared/cubit/beneficiary_state.dart';
-import 'package:pa_mobile/shared/services/request/beneficiary/BeneficiaryRepository.dart';
+import 'package:pa_mobile/shared/services/request/beneficiary/beneficiary_repository.dart';
 
 class BeneficiaryCubit extends Cubit<BeneficiaryState> {
   BeneficiaryCubit({required this.beneficiaryRepository})

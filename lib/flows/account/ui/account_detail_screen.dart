@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pa_mobile/shared/cubit/beneficiary_cubit.dart';
 import 'package:pa_mobile/shared/cubit/beneficiary_state.dart';
-import 'package:pa_mobile/shared/services/request/beneficiary/BeneficiaryRepository.dart';
+import 'package:pa_mobile/shared/services/request/beneficiary/beneficiary_repository.dart';
 
 class AccountDetailsScreen extends StatefulWidget {
+  const AccountDetailsScreen({super.key});
+
   static const routeName = '/account';
 
   @override
@@ -19,6 +21,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         beneficiaryRepository: BeneficiaryRepository(),
       ),
       child: Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
           title: const Text('Account Details'),
         ),
