@@ -17,7 +17,7 @@ class EncodeTools {
   static String decodeString(String body, String key) {
     try {
       final jsonObject = jsonDecode(body);
-      return _validateField<String>(jsonObject, key);
+      return utf8.decode(_validateField<String>(jsonObject, key).runes.toList());
     } catch (e) {
       throw Exception('error decoding string');
     }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:pa_mobile/core/utils/encode.dart';
 
 class LoginResponseDto {
@@ -6,9 +8,7 @@ class LoginResponseDto {
   String jwtToken;
 
   static LoginResponseDto decode(String jsonObject) {
-    print(jsonObject);
-    final token = EncodeTools.decodeString(jsonObject, 'jwtToken');
-    final loginResponseDto = LoginResponseDto(jwtToken: token);
-    return loginResponseDto;
+    final token = utf8.decode(EncodeTools.decodeString(jsonObject, 'jwtToken').runes.toList());
+    return LoginResponseDto(jwtToken: token);
   }
 }

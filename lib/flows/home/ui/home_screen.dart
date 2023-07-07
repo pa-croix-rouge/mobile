@@ -1,90 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
-import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
-import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
-import 'package:pa_mobile/flows/home/logic/home.dart';
-import 'package:pa_mobile/shared/services/storage/jwt_secure_storage.dart';
-import 'package:pa_mobile/shared/services/storage/stay_login_secure_storage.dart';
+import 'package:pa_mobile/flows/inscription/ui/register_screen.dart';
+import 'package:pa_mobile/shared/widget/xbutton.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   static const routeName = '/home';
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  TextStyle textTitleStyle(Color color) {
+    return TextStyle(
+      fontSize: 50,
+      fontWeight: FontWeight.bold,
+      color: color,
+    );
+  }
 
-class _HomeScreenState extends State<HomeScreen> {
-  late Future<BeneficiaryResponseDto> beneficiaryInfo;
+  TextStyle textSubTitleStyle() {
+    return const TextStyle(
+      fontSize: 35,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    );
+  }
 
-  int _screenIndex = 1;
-  String title = 'Profile';
+  TextStyle textDescriptionStyle() {
+    return TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.bold,
+      color: Colors.black.withOpacity(0.5),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    //faire la requette pour recuperer les infos de l'utilisateur
-    //si la requette echoue, on redirige vers la page de login + delete token + delete stay login
-
-    Home.getBeneficiaryInfo();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title,
-            style: Theme.of(context).textTheme.headlineLarge,),
-      ),
-      body: getBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _screenIndex,
-        onTap: _onNavigationChanged,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).colorScheme.tertiary,
-        unselectedItemColor: Theme.of(context).colorScheme.secondary,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Evenements',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+  Widget actionDecorator({required Widget child}) {
+    return SafeArea(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: child,
       ),
     );
   }
 
-  Widget getBody() {
-    if (_screenIndex == 0) {
-      return const EventScreen();
-    } else if (_screenIndex == 1) {
-      return const Text('Not implemented yet');
-    } else {
-      return const Text('Error');
-    }
-  }
-
-  void _onNavigationChanged(int index) {
-    setState(() {
-      _screenIndex = index;
-      if (_screenIndex == 0) {
-        title = 'Evenements';
-      } else if (_screenIndex == 1) {
-        title = 'Profile';
-      } else {
-        title = 'Error';
-      }
-    });
-  }
-
   @override
-  void initState() {
-    getVolunteer();
-    super.initState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      body: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircleAvatar(
+                      radius: 80,
+                      backgroundColor: Colors.black,
+                      child: CircleAvatar(
+                        radius: 78,
+                        backgroundImage: AssetImage('assets/images/drapeau.jpeg'),
+                      ),
+                    ),
+                    Text(
+                        'CROIX',
+                        style: textTitleStyle(Colors.black)
+                    ),
+                    Text(
+                      'ROUGE',
+                      style: textTitleStyle(Colors.redAccent),
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      'Bienvenue',
+                      style: textSubTitleStyle(),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        "Application dédiée aux bénéficiare de l'unité local du Val d'Orge.",
+                        textAlign: TextAlign.center,
+                        style: textDescriptionStyle(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actionDecorator(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: XButton(
+                        borderRadius: 0,
+                        color: Colors.redAccent,
+                        onPressed: () => onRegister(context),
+                        child: const Text(
+                          "S'inscrire",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: XButton(
+                        borderRadius: 0,
+                        color: Colors.white,
+                        onPressed: () => onConnect(context),
+                        child: const Text(
+                          'Se connecter',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Future<void> getVolunteer() async {
-    beneficiaryInfo = Home.getBeneficiaryInfo();
+  void onRegister(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      RegisterScreen.routeName,
+    );
+  }
+
+  void onConnect(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      LoginScreen.routeName,
+    );
   }
 }
