@@ -27,7 +27,7 @@ class HttpRequests {
       url,
       headers: await _defaultHeaders(headers),
       body: body,
-    ).timeout(const Duration(seconds: 20));
+    ).timeout(const Duration(seconds: 120));
   }
 
   static Future<Response> delete(
@@ -43,7 +43,7 @@ class HttpRequests {
           headers: await _defaultHeaders(headers),
           body: body,
         )
-        .timeout(const Duration(seconds: 20));
+        .timeout(const Duration(seconds: 120));
   }
 
   static Future<Response> get(String route,
@@ -55,6 +55,18 @@ class HttpRequests {
           url,
           headers: await _defaultHeaders(headers),
         )
-        .timeout(const Duration(seconds: 20));
+        .timeout(const Duration(seconds: 120));
+  }
+
+  static Future<Response> put(String route, Object body,
+      [Map<String, String>? headers]) async {
+    final url = Uri.parse(Environment.apiURL + route);
+    return http
+        .put(
+          url,
+          headers: await _defaultHeaders(headers),
+          body: body,
+        )
+        .timeout(const Duration(seconds: 120));
   }
 }

@@ -12,6 +12,7 @@ class BeneficiaryResponseDto {
     this.phoneNumber,
     this.isValidated,
     this.localUnitId,
+    this.solde,
   );
 
   final int id;
@@ -22,6 +23,7 @@ class BeneficiaryResponseDto {
   final String phoneNumber;
   final bool isValidated;
   final int localUnitId;
+  final int solde;
 
   static BeneficiaryResponseDto decode(String jsonObject) {
     final id = EncodeTools.decodeInt(jsonObject, 'id');
@@ -32,6 +34,7 @@ class BeneficiaryResponseDto {
     final phoneNumber = EncodeTools.decodeString(jsonObject, 'phoneNumber');
     final isValidated = EncodeTools.decodeBool(jsonObject, 'isValidated');
     final localUnitId = EncodeTools.decodeInt(jsonObject, 'localUnitId');
+    final solde = EncodeTools.decodeInt(jsonObject, 'solde');
     return BeneficiaryResponseDto(
       id,
       birthDate,
@@ -41,6 +44,7 @@ class BeneficiaryResponseDto {
       phoneNumber,
       isValidated,
       localUnitId,
+      solde,
     );
   }
 }

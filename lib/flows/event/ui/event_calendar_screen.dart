@@ -44,12 +44,11 @@ class _EventScreenState extends State<EventScreen> {
 
   Future<List<EventResponseDTO>> load() async {
     final res = await Future.wait([
-      EventLogic.getConnectBeneficiary(),
-      EventLogic.getLocalUnitEvent('1')
+      EventLogic.getConnectBeneficiary()
     ]);
 
-    beneficiary = res[0] as BeneficiaryResponseDto;
-    return res[1] as List<EventResponseDTO>;
+    beneficiary = res[0];
+    return EventLogic.getLocalUnitEvent(beneficiary.localUnitId.toString());
   }
 
   @override

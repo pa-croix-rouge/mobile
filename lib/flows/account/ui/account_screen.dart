@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pa_mobile/core/model/address/address_dto.dart';
 import 'package:pa_mobile/core/model/beneficiary/beneficiary_response_dto.dart';
 import 'package:pa_mobile/core/model/local_unit/local_unit_response_dto.dart';
-import 'package:pa_mobile/core/model/volonteer/volunteer_response_dto.dart';
 import 'package:pa_mobile/flows/account/ui/modify_profile_screen.dart';
-import 'package:pa_mobile/flows/authentication/ui/login_screen.dart';
 import 'package:pa_mobile/flows/event/ui/event_calendar_screen.dart';
 import 'package:pa_mobile/flows/account/logic/account.dart';
 import 'package:pa_mobile/flows/home/ui/home_screen.dart';
@@ -30,6 +28,7 @@ class _AccountScreenState extends State<AccountScreen> {
     'loading',
     'loading',
     false,
+    0,
     0,
   );
 
@@ -145,12 +144,13 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                     const Spacer(),
                     RawMaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
+                      onPressed: () async {
+                        await Navigator.pushNamed(
                           context,
                           ModifyProfileScreen.routeName,
                           arguments: beneficiary,
                         );
+                        setState(() {});
                       },
                       fillColor: Theme.of(context).colorScheme.secondary,
                       padding: const EdgeInsets.all(10),
@@ -187,6 +187,17 @@ class _AccountScreenState extends State<AccountScreen> {
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: Column(
                   children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.account_balance_wallet),
+                        labelText: 'Solde restant',
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: '${beneficiary.solde/100}€',
+                      ),
+                      focusNode: AlwaysDisabledFocusNode(),
+                    ),
                     TextField(
                       decoration: const InputDecoration(
                         icon: Icon(Icons.email),

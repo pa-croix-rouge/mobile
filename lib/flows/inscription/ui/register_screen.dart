@@ -676,7 +676,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Une erreur est survenue'),
+            content: Text('Inscription échouée'),
           ),
         );
       }

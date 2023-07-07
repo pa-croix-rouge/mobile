@@ -14,6 +14,7 @@ class FieldValidators {
 
   static TextFieldValidator get passwordValidator => RequiredValidator(errorText: 'Mot de passe requis');
 
+
   static FieldValidator<dynamic> get phoneNumberValidator => MultiValidator([
     RequiredValidator(errorText: 'Numéro de téléphone requis'),
     MinLengthValidator(10, errorText: 'Un numéro de téléphone doit 10 chiffres'),

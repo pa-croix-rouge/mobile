@@ -40,89 +40,90 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Theme(
-          data: ThemeData(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: Colors.green,
-                  background: Colors.red,
-                  secondary: Colors.green,
-                  tertiary: Colors.green,
-                ),
-          ),
-          child: Column(
-            children: [
-              const Spacer(),
-              Form(
-                key: _loginKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(),
-                            icon: Icon(Icons.account_circle),
-                            fillColor: Color(0xfff3f3f4),
-                            filled: true,
-                          ),
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          controller: widget.usernameController,
-                          validator: FieldValidators.emailValidator,
-                          focusNode: _focusNodes[0],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Mot de passe',
-                            icon: const Icon(Icons.lock),
-                            border: const OutlineInputBorder(),
-                            fillColor: const Color(0xfff3f3f4),
-                            filled: true,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _seePassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _seePassword = !_seePassword;
-                                });
-                              },
-                            ),
-                          ),
-                          obscureText: !_seePassword,
-                          textInputAction: TextInputAction.done,
-                          controller: widget.passwordController,
-                          validator: FieldValidators.passwordValidator,
-                          focusNode: _focusNodes[1],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          XButton(
-                            onPressed: onLoginPressed,
-                            child: const Text('Se connecter'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Spacer(),
-            ],
+      body: Theme(
+        data: ThemeData(
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+            primary: Colors.green,
+            background: Colors.red,
+            secondary: Colors.green,
+            tertiary: Colors.green,
           ),
         ),
+        child: SafeArea(
+            child: Column(
+              children: [
+                const Spacer(),
+                Form(
+                  key: _loginKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              border: OutlineInputBorder(),
+                              icon: Icon(Icons.account_circle),
+                              fillColor: Color(0xfff3f3f4),
+                              filled: true,
+                            ),
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            controller: widget.usernameController,
+                            validator: FieldValidators.emailValidator,
+                            focusNode: _focusNodes[0],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Mot de passe',
+                              icon: const Icon(Icons.lock),
+                              border: const OutlineInputBorder(),
+                              fillColor: const Color(0xfff3f3f4),
+                              filled: true,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _seePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _seePassword = !_seePassword;
+                                  });
+                                },
+                              ),
+                            ),
+                            obscureText: !_seePassword,
+                            textInputAction: TextInputAction.done,
+                            controller: widget.passwordController,
+                            validator: FieldValidators.passwordValidator,
+                            focusNode: _focusNodes[1],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            XButton(
+                              onPressed: onLoginPressed,
+                              child: const Text('Se connecter'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
+
       ),
     );
   }
@@ -138,19 +139,20 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> onLoginPressed() async {
     if (_loginKey.currentState!.validate()) {
       try {
-        if (await Authentication.login(
+        final s = await Authentication.login(
           LoginRequestDto(
             username: widget.usernameController.text,
             password: widget.passwordController.text,
           ),
-        )) {
+        );
+        if (s == 'success') {
           await StayLoginSecureStorage().stayLogin();
           await Navigator.of(context).pushNamedAndRemoveUntil(
               AccountScreen.routeName, (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Wrong username and password combination'),
+              content: Text(s),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );

@@ -18,18 +18,19 @@ class BeneficiaryCreationRequest extends Encodable {
   });
 
   String username;
-  String password;
+  String? password;
   String firstName;
   String lastName;
   String phoneNumber;
   String localUnitCode;
   String birthDate;
   String socialWorkerNumber;
-  List<FamilyMemberCreationRequest> familyMembers;
+  List<FamilyMemberCreationRequest>? familyMembers;
 
   Map<String, dynamic> toJson() {
     return {
       'username': username,
+      if (password != null)
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
@@ -37,7 +38,7 @@ class BeneficiaryCreationRequest extends Encodable {
       'localUnitCode': localUnitCode,
       'birthDate': '${birthDate}T00:00:00.000Z',
       'socialWorkerNumber': socialWorkerNumber,
-      'familyMembers': familyMembers.map((e) => e.toJson()).toList(),
+      if (familyMembers != null) 'familyMembers': familyMembers!.map((e) => e.toJson()).toList(),
     };
   }
 
